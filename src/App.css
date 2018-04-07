@@ -1,0 +1,120 @@
+#root {
+  height: 100%;
+}
+
+.darg-move-window {
+  /*noinspection CssUnknownProperty*/
+  -webkit-app-region: drag
+}
+
+.App, .ant-layout {
+  height: 100%;
+  background: #ffffff;
+}
+
+.ant-layout-sider,
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub  {
+  background-color: #32373f;
+}
+
+.userInfo {
+  padding: 40px 0 10px 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.userName {
+  line-height: 1.2;
+  margin-left: 4px;
+  font-size: 14px;
+}
+
+.userVip {
+  background-color: #da5444;
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 3px;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.header-title {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background-color: #e7e7e7;
+}
+.header-toolbar {
+  background-color: #f7f7f7;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 0 0 20px;
+  border-bottom: 1px #ddd solid;
+}
+
+.ant-list.ant-list-split {
+  background-color: #ffffff;
+}
+
+.ant-list-item-content {
+  justify-content: space-between;
+  flex: initial;
+  width: 260px;
+  align-items: center;
+  -webkit-user-select: none;
+}
+.ant-list-item-meta-description,
+.ant-layout-sider-children{
+  -webkit-user-select: none;
+}
+
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+  background-color: #ffffff;
+  color: #666666;
+}
+
+.ant-layout-content {
+  overflow: auto;
+  background-color: #f7f7f7;
+}
+
+.newTaskDialog {
+
+}
+
+.newTaskDialog .ant-modal-footer {
+  padding: 10px 0px 0;
+}
+
+.newTaskDialog .ant-modal-close-x {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+}
+
+.newTaskDialog .ant-modal-body {
+  padding: 10px;
+  background-color: #f7f7f7;
+}
+
+.newTaskDialog .ant-modal-body textarea {
+  resize: none;
+}
+
+.newTaskDialog .ant-modal-header {
+  padding: 10px 12px;
+}
+
+.newTaskDialog .ant-modal-title {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
