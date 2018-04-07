@@ -119,6 +119,7 @@
   to { transform: rotate(360deg); }
 }
 
+.ant-card-wider-padding .ant-card-body,
 .ant-card-body {
   padding: 0;
 }
@@ -129,4 +130,7 @@
 }
 .ant-tabs-large .ant-tabs-tab {
   padding: 6px;
+}
+.ant-card-grid:hover{
+  box-shadow: none;
 }
