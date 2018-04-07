@@ -1,11 +1,22 @@
 import React, {Component} from 'react'
-import {Button, Dropdown, Icon, Layout, List, Modal, Input, Divider, Menu, message, Form, Upload, Popconfirm} from 'antd'
+import {
+  Button, Dropdown, Icon, Layout, List,
+  Modal, Input, Divider, Menu, message,
+  Form, Upload, Popconfirm, Card
+} from 'antd'
+import {bytesToSize, getStatusText} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
 
 const {Header, Content} = Layout;
 const {TextArea} = Input;
 const Dragger = Upload.Dragger;
+
+const gridStyle = {
+  width: '33.333333333%',
+  textAlign: 'left',
+  padding: 5
+};
 
 export default class DownloadView extends Component {
 
@@ -14,7 +25,9 @@ export default class DownloadView extends Component {
     this.state = {
       visible: false,
       data: props.data || [],
-      selectedItem: null
+      selectedItem: null,
+      key: 'tab1',
+      noTitleKey: 'info'
     };
     props.aria2.getGlobalOption().then(config => {
       this.setState({config})
@@ -33,8 +46,11 @@ export default class DownloadView extends Component {
     }
   }
 
+  onTabChange = (key, type) => {
+    this.setState({ [type]: key });
+  }
+
   showModal = (item) => {
-    console.log(item.key);
     this.setState({
       visible: true,
       taskType: item.key
@@ -186,6 +202,7 @@ export default class DownloadView extends Component {
             renderItem={item => this.renderItem(item)}/>
         </Content>
         {this.renderAddTaskDialog()}
+        {this.renderCard(this.state.data && selectedItem ? this.state.data.filter(item => item.gid === selectedItem.gid)[0] : null)}
       </Layout>
     )
   }
@@ -195,11 +212,104 @@ export default class DownloadView extends Component {
     item.selected = selected;
     if (selected && this.state.selectedItem) {
       this.state.selectedItem.status = item.status;
+      // this.setState({selectedItem: item})
     }
     return (
       <DownloadItem
         selected={selected}
         onClick={() => this.onItemClick(item)} item={item}/>
+    )
+  }
+
+  renderCard(item){
+    if (Array.isArray(item)) item = item[0];
+    const tabListNoTitle = [{
+      key: 'info',
+      tab: '下载详情',
+    }];
+    if (item && item.bittorrent){
+      tabListNoTitle.push({
+        key: 'bit',
+        tab: '种子信息',
+      })
+    } else if (this.state.noTitleKey !== 'info') {
+      this.setState({
+        noTitleKey: 'info'
+      })
+    }
+    return (
+      <Card activeTabKey={this.state.noTitleKey}
+            tabList={item ? tabListNoTitle : []}
+            onTabChange={(key) => { this.onTabChange(key, 'noTitleKey'); }}
+            style={{
+              width: '100%',
+              height: item ? 192 : 0,
+              // display: item ? 'block' : 'none'
+            }}>
+        {item && this.state.noTitleKey === 'info' ?
+        <div style={{
+          height: item ? 155 : 0,
+          overflow:'auto'
+        }}>
+          <Card.Grid style={{width: '100%', padding: 5}}>
+            文件名称: {item.title}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            任务状态: {getStatusText(item.status)}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            文件大小: {bytesToSize(item.totalLength)}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            存储目录: {item.dir}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            已下载: {bytesToSize(item.completedLength)}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            当前下载速度: {bytesToSize(item.downloadSpeed)}/秒
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            下载进度: {item.progress}%
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            分片数: {item.numPieces}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            分片大小: {bytesToSize(item.pieceLength)}
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            连接数: {item.connections}
+          </Card.Grid>
+          {item.files && item.files.length ? item.files.map(file => (
+            <Card.Grid style={{width: '100%', padding: 5}} key={file.path}>
+              文件位置: {file.path}
+            </Card.Grid>
+          )) : null}
+          {/*{JSON.stringify(item)}*/}
+        </div>
+          : null }
+
+        {item && item.bittorrent && this.state.noTitleKey === 'bit' ? <div style={{
+          height: item ? 155 : 0,
+          overflow:'auto'
+        }}>
+          <Card.Grid style={{width: '100%', padding: 5}}>
+            注释: {item.bittorrent.comment}
+          </Card.Grid>
+          <Card.Grid style={{width: '100%', padding: 5}}>
+            创建时间: {item.bittorrent.creationDate ? (new Date(Number(item.bittorrent.creationDate) * 1000)).toLocaleString() : ''}
+          </Card.Grid>
+          {/*{item.bittorrent.info ? Object.keys(item.bittorrent.info).map(key => {*/}
+            {/*return (*/}
+              {/*<Card.Grid style={{padding: 5}} key={key}>*/}
+                {/*{key}: {item.bittorrent.info[key]}*/}
+              {/*</Card.Grid>*/}
+            {/*)*/}
+          {/*}) : null}*/}
+          {/*{JSON.stringify(item.bittorrent)}*/}
+        </div> : null }
+        </Card>
     )
   }
 

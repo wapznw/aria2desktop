@@ -117,13 +117,13 @@ if (fs.existsSync(aria2Cli)){
 
 function createWindow() {
   mainWindow = new BrowserWindow({width: 900, height: 600, titleBarStyle: 'hiddenInset', show: false});
-  // mainWindow.loadURL('http://localhost:3000/');
+  mainWindow.loadURL('http://localhost:3000/');
   // mainWindow.loadURL(`file://${process.cwd()}/electron.asar/index.html`)
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
+  // mainWindow.loadURL(url.format({
+  //   pathname: path.join(__dirname, 'index.html'),
+  //   protocol: 'file:',
+  //   slashes: true
+  // }));
 
   mainWindow.on('closed', function () {
     mainWindow = null
