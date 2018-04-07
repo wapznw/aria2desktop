@@ -6,45 +6,41 @@ const url = require('url')
 
 const template = [
   {
-    label: 'Edit',
+    label: '编辑',
     submenu: [
       {role: 'undo'},
       {role: 'redo'},
       {type: 'separator'},
-      {role: 'cut'},
-      {role: 'copy'},
-      {role: 'paste'},
-      {role: 'pasteandmatchstyle'},
-      {role: 'delete'},
-      {role: 'selectall'}
+      {role: 'cut', label: '剪切'},
+      {role: 'copy', label: '复制'},
+      {role: 'paste', label: '粘贴'},
+      {role: 'delete', label: '删除'},
+      {role: 'selectall', label: '全选'}
     ]
   },
   {
-    label: 'View',
+    label: '视图',
     submenu: [
-      {role: 'reload'},
-      {role: 'forcereload'},
-      {role: 'toggledevtools'},
-      {type: 'separator'},
-      {role: 'resetzoom'},
-      {role: 'zoomin'},
-      {role: 'zoomout'},
+      {role: 'reload', label: '重新载入'},
+      {role: 'forcereload', label: '强制重新载入'},
       {type: 'separator'},
       {role: 'togglefullscreen'}
     ]
   },
   {
     role: 'window',
+    label: '窗口',
     submenu: [
-      {role: 'minimize'},
-      {role: 'close'}
+      {role: 'minimize', label: '最小化'},
+      {role: 'close', label: '关闭'}
     ]
   },
   {
     role: 'help',
+    label: '帮助',
     submenu: [
       {
-        label: 'Learn More',
+        label: '在线帮助',
         click () { shell.openExternal('https://github.com/wapznw/aria2desktop') }
       }
     ]
@@ -57,13 +53,13 @@ if (process.platform === 'darwin') {
     submenu: [
       {role: 'about', label: '关于' + app.getName()},
       {type: 'separator'},
-      {role: 'services', submenu: []},
+      {role: 'services', label: '服务', submenu: []},
       {type: 'separator'},
       {role: 'hide'},
       {role: 'hideothers'},
       {role: 'unhide'},
       {type: 'separator'},
-      {role: 'quit'}
+      {role: 'quit', label: '退出'}
     ]
   });
 }
