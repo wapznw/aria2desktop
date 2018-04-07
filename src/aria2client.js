@@ -38,7 +38,7 @@ export default class Aria2Client {
   connect() {
     const aria2 = this.aria2;
     aria2.onclose = () => {
-      if (this._timer != null) clearInterval(this._timer)
+      if (this._timer != null) clearInterval(this._timer);
     };
     aria2.open().then(async () => {
       if ((await this.refreshTasks()).length) {

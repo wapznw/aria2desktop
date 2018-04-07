@@ -1,0 +1,32 @@
+{
+  "name": "aria2-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "^1.8.4"
+  },
+  "build": {
+    "appId": "com.wendaojiang.aria2desktop",
+    "productName": "Aria2Desktop",
+    "asar": false,
+    "mac": {
+      "icon": "AppIcon.icns",
+      "target": "dmg",
+      "category": "com.wendaojiang.aria2"
+    },
+    "win": {
+      "icon": "AppIcon.icns",
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  }
+}
