@@ -16,7 +16,7 @@ export default class LeftSider extends React.Component {
     return (
       <Sider width={160}>
         <div className="userInfo">
-          <Avatar size="large">信</Avatar>
+          <Avatar size="large" icon={'user'}/>
           <div className="userName">
             <div>信步星空</div>
             <div className="userVip">VIP8</div>
