@@ -42,7 +42,6 @@ class SettingView extends React.Component {
   }
 
   render() {
-    const saveDir = this.state.dir || '';
     const addonAfter = device.electron ? <label onClick={() => this.openFileDialog()}>选择目录</label> : null;
     return (
       <Layout>
@@ -53,7 +52,8 @@ class SettingView extends React.Component {
               <Input prefix={<Icon type="folder" style={{color: 'rgba(0,0,0,.25)'}}/>}
                      addonAfter={addonAfter}
                      onChange={(e) => this.setState({dir: e.target.value})}
-                     defaultValue={saveDir} placeholder="默认文件保存路径"/>
+                     value={this.state.dir}
+                     placeholder="默认文件保存路径"/>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
