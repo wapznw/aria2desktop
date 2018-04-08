@@ -2,8 +2,19 @@
 
 #### 一个aria2的UI界面
 代码还在整理中
-![image](pic20180407-0.png)
+![image](WX20180408-172402.png)
 ---
-![image description](pic20180407-1.png)
+![image description](WX20180408-172436.png)
 ---
-![image description](pic20180407-2.png)
+![image description](WX20180408-172453.png)
+---
+![image description](WX20180408-172503.png)
+
+---
+![image description](WX20180408-172615.png)
+
+---
+![image description](WX20180408-172905.png)
+
+---
+![image description](WX20180408-172938.png)
