@@ -37,6 +37,10 @@ export default class LeftSider extends React.Component {
             <Icon type="delete"/>
             <span>废纸篓</span>
           </Menu.Item>
+          <Menu.Item key="setting">
+            <Icon type="setting" />
+            <span>设置</span>
+          </Menu.Item>
         </Menu>
       </Sider>
     )

@@ -11,12 +11,12 @@
     "productName": "Aria2Desktop",
     "asar": false,
     "mac": {
-      "icon": "AppIcon.icns",
+      "icon": "aria2icon.icns",
       "target": "dmg",
       "category": "com.wendaojiang.aria2"
     },
     "win": {
-      "icon": "AppIcon.icns",
+      "icon": "aria2icon.ico",
       "target": {
         "target": "nsis",
         "arch": [

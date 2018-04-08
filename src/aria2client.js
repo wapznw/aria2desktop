@@ -1,5 +1,6 @@
 import {
-  formatResult
+  formatResult,
+  getTitle
 } from './aria2utils'
 
 const Aria2 = window.Aria2;
@@ -45,8 +46,17 @@ export default class Aria2Client {
         this.startRefresh()
       }
     });
-    aria2.onDownloadStart = /*aria2.onDownloadPause = aria2.onDownloadStop =*/ () => {
+    aria2.onDownloadStart = /*aria2.onDownloadPause = aria2.onDownloadStop =*/ ({gid}) => {
       this.startRefresh()
+    };
+    aria2.onBtDownloadComplete = aria2.onDownloadComplete = ({gid}) => {
+      aria2.getFiles(gid).then(res => {
+        if(res && res.length){
+          new Notification('下载完成', {
+            body: getTitle({files: res, dir: ''})
+          })
+        }
+      })
     };
     this.aria2 = aria2;
   }

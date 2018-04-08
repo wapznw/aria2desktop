@@ -4,9 +4,11 @@ import {
   Modal, Input, Divider, Menu, message,
   Form, Upload, Popconfirm, Card
 } from 'antd'
-import {bytesToSize, getStatusText} from '../aria2utils'
+import {bytesToSize, getStatusText, getFileExt} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
+
+const {shell} = window.require('electron').remote;
 
 const {Header, Content} = Layout;
 const {TextArea} = Input;
@@ -46,9 +48,32 @@ export default class DownloadView extends Component {
     }
   }
 
+  componentDidMount(){
+
+    document.ondragover = (e) => {
+      if(!this.state.visible){
+        this.setState({
+          visible: true,
+          taskType: 'bt'
+        })
+      }
+      e.preventDefault();  //只有在ondragover中阻止默认行为才能触发 ondrop 而不是 ondragleave
+    };
+    document.ondrop = (e) => {
+      console.log(e.dataTransfer.files);
+      const files = e.dataTransfer.files;
+      if (this.state.taskType === 'bt' && files && files.length && getFileExt(files[0].name) !== 'torrent') {
+        this.setState({
+          visible: false
+        })
+      }
+      e.preventDefault();  //阻止 document.ondrop的默认行为  *** 在新窗口中打开拖进的图片
+    };
+  }
+
   onTabChange = (key, type) => {
     this.setState({ [type]: key });
-  }
+  };
 
   showModal = (item) => {
     this.setState({
@@ -56,8 +81,13 @@ export default class DownloadView extends Component {
       taskType: item.key
     });
   };
+
   handleOk = (e) => {
     const aria2 = this.props.aria2;
+    const saveDir = this.getSaveDir();
+    let options = {};
+    if (saveDir) options.dir = saveDir;
+
     if (aria2 && this.state.url) {
       let urls = this.state.url.split('\n');
       urls = urls.map(url => url.trim()).filter(url => url && url.length > 5);
@@ -65,20 +95,17 @@ export default class DownloadView extends Component {
         switch (this.state.taskType) {
           case 'url':
             urls.forEach(url => {
-              aria2.addUri([url]).catch(e=>{
+              aria2.addUri([url], options).catch(e=>{
                 message.error(e.message)
               });
             });
-            // aria2.addUri(urls, {
-            //   dir: this.state.config.dir
-            // });
             break;
           case 'magnet':
             message.error('磁力连接暂不支持');
             break;
           case 'bt':
             urls.forEach(url => {
-              aria2.addTorrent(url).catch(e=>{
+              aria2.addTorrent(url, options).catch(e=>{
                 message.error(e.message)
               });
             });
@@ -103,6 +130,10 @@ export default class DownloadView extends Component {
       visible: false,
     });
   };
+
+  getSaveDir(){
+    return localStorage.getItem('DEFAULT_SAVE_DIR')
+  }
 
   onItemClick(item) {
     item.selected = !item.selected;
@@ -211,8 +242,8 @@ export default class DownloadView extends Component {
     const selected = this.state.selectedItem && item.gid === this.state.selectedItem.gid;
     item.selected = selected;
     if (selected && this.state.selectedItem) {
+      // eslint-disable-next-line
       this.state.selectedItem.status = item.status;
-      // this.setState({selectedItem: item})
     }
     return (
       <DownloadItem
@@ -239,12 +270,12 @@ export default class DownloadView extends Component {
     }
     return (
       <Card activeTabKey={this.state.noTitleKey}
+            className="download-item-details-card"
             tabList={item ? tabListNoTitle : []}
             onTabChange={(key) => { this.onTabChange(key, 'noTitleKey'); }}
             style={{
               width: '100%',
-              height: item ? 192 : 0,
-              // display: item ? 'block' : 'none'
+              height: item ? 192 : 0
             }}>
         {item && this.state.noTitleKey === 'info' ?
         <div style={{
@@ -284,9 +315,13 @@ export default class DownloadView extends Component {
           {item.files && item.files.length ? item.files.map(file => (
             <Card.Grid style={{width: '100%', padding: 5}} key={file.path}>
               文件位置: {file.path}
+              <a className="device-electron-show"
+                 style={{marginLeft: 5}} title={'在文件管理器中显示'}
+                 onClick={()=>shell.showItemInFolder(file.path)}>
+                <Icon type="search" />
+              </a>
             </Card.Grid>
           )) : null}
-          {/*{JSON.stringify(item)}*/}
         </div>
           : null }
 
@@ -340,7 +375,7 @@ export default class DownloadView extends Component {
             let reader = new FileReader();
             reader.onload = () => {
               let txt = reader.result;
-              this.setState({url: txt.substr(txt.indexOf('base64,') + 7)})
+              this.setState({url: txt.substr(txt.indexOf('base64,') + 7)});
               this.handleOk()
             };
             reader.readAsDataURL(c.file);

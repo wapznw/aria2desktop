@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, ipcMain, shell, Tray, clipboard} = require('electron');
+const {app, BrowserWindow, Menu, ipcMain, shell, Tray, dialog} = require('electron');
 const child_process = require('child_process');
 const path = require('path')
 const fs = require('fs')
@@ -148,23 +148,42 @@ function createWindow() {
     mainWindow.minimize()
   });
 
+  ipcMain.on('open-file-dialog', function (options) {
+    console.log(options);
+    dialog.showOpenDialog({properties: ['openDirectory', 'multiSelections']})
+  });
+
   mainWindow.once('ready-to-show', () => {
     Menu.setApplicationMenu(menu)
     mainWindow.show()
   })
-
 }
 
 app.on('ready', function () {
   createWindow()
-  const tray = new Tray(path.join(__dirname, 'aria2tray.png'));
+  const tray = new Tray(path.join(__dirname, 'aria2icon_16.png'));
   tray.setToolTip('aria2 desktop');
+  const contextMenu = Menu.buildFromTemplate([
+    {role: 'about', label: '关于' + app.getName()},
+    {type: 'separator'},
+    {role: 'hide', label: '隐藏'},
+    {type: 'separator'},
+    {role: 'quit', label: '完全退出'}
+  ])
   // tray.setContextMenu(contextMenu)
   tray.on('click', () => {
     if (mainWindow === null) {
       createWindow()
+    } else {
+      if (mainWindow.isVisible() && !mainWindow.isFocused()){
+        mainWindow.focus();
+      } else {
+        mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+      }
     }
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
+  tray.on('right-click', () => {
+    tray.popUpContextMenu(contextMenu)
   })
 });
 
@@ -178,5 +197,6 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+  mainWindow.isFocused() || mainWindow.focus();
 });
 

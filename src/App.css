@@ -7,9 +7,18 @@
   -webkit-app-region: drag
 }
 
+.device-electron-show {
+  display: none;
+}
+
+.device-electron .device-electron-show {
+  display: inline;
+}
+
 .App, .ant-layout {
   height: 100%;
   background: #ffffff;
+  overflow: hidden;
 }
 
 .ant-layout-sider,
@@ -19,10 +28,14 @@
 }
 
 .userInfo {
-  padding: 40px 0 10px 20px;
+  padding: 20px 0 10px 20px;
   color: white;
   display: flex;
   align-items: center;
+}
+
+.device-macOs.device-electron .userInfo {
+  padding: 40px 0 10px 20px;
 }
 
 .userName {
@@ -63,10 +76,12 @@
   flex: initial;
   width: 260px;
   align-items: center;
+  user-select: none;
   -webkit-user-select: none;
 }
 .ant-list-item-meta-description,
 .ant-layout-sider-children{
+  user-select: none;
   -webkit-user-select: none;
 }
 
@@ -119,18 +134,20 @@
   to { transform: rotate(360deg); }
 }
 
-.ant-card-wider-padding .ant-card-body,
-.ant-card-body {
+/* 下载详情card */
+.download-item-details-card .ant-card-wider-padding .ant-card-body,
+.download-item-details-card .ant-card-body {
   padding: 0;
 }
-.ant-card-head {
+.download-item-details-card .ant-card-head {
   min-height: 35px;
   padding: 0 10px;
+  user-select: none;
   -webkit-user-select: none;
 }
-.ant-tabs-large .ant-tabs-tab {
+.download-item-details-card .ant-tabs-large .ant-tabs-tab {
   padding: 6px;
 }
-.ant-card-grid:hover{
+.download-item-details-card .ant-card-grid:hover{
   box-shadow: none;
 }
