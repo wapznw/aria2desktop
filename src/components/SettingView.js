@@ -52,7 +52,8 @@ class SettingView extends React.Component {
             <Form.Item label={'文件保存目录'}>
               <Input prefix={<Icon type="folder" style={{color: 'rgba(0,0,0,.25)'}}/>}
                      addonAfter={addonAfter}
-                     value={saveDir} placeholder="默认文件保存路径"/>
+                     onChange={(e) => this.setState({dir: e.target.value})}
+                     defaultValue={saveDir} placeholder="默认文件保存路径"/>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">

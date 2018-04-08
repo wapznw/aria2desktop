@@ -105,7 +105,7 @@ export default class DownloadView extends Component {
             break;
           case 'bt':
             urls.forEach(url => {
-              aria2.addTorrent(url, options).catch(e=>{
+              aria2.addTorrent(url, [], options).catch(e=>{
                 message.error(e.message)
               });
             });
