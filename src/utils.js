@@ -1,3 +1,5 @@
+import EventEmitter from 'event-emitter'
+
 export function getStorage(key) {
   let val = localStorage.getItem(key);
   try {
@@ -13,4 +15,6 @@ export function getStorage(key) {
 export function setStorage(key, value) {
   localStorage.setItem(key, JSON.stringify(value))
 }
+
+export const eventBus = new EventEmitter();
 

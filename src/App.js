@@ -8,9 +8,11 @@ import DownloadView from './components/DownloadView'
 import SettingView from './components/SettingView'
 
 import './App.css';
-import {getStorage, setStorage} from "./utils";
+import {eventBus, getStorage, setStorage} from "./utils";
+import {getDownloadSaveDir, setDownloadSaveDir} from "./aria2utils";
 
 const defaultServer = {
+  id: 1,
   host: '127.0.0.1',
   port: 6800,
   secure: false,
@@ -18,11 +20,11 @@ const defaultServer = {
 };
 setStorage('ARIA2_LOCAL_SERVER', defaultServer);
 let conf = getStorage('ARIA2_SERVER');
-if (conf.host === defaultServer.host && conf.port === defaultServer.port) {
-  conf = defaultServer;
-}
-
-if (!conf) {
+if (conf) {
+  if (conf.host === defaultServer.host && conf.port === defaultServer.port) {
+    conf = defaultServer;
+  }
+} else {
   conf = defaultServer
 }
 
@@ -48,10 +50,11 @@ class App extends Component {
     });
 
     this.aria2.onConnect = async () => {
-      this.aria2.getGlobalOption().then(res => {
-        if (!getStorage(`ARIA2_DOWNLOAD_DIR${conf.id}`)){
-          setStorage(`ARIA2_DOWNLOAD_DIR${conf.id}`, res.dir);
+      this.aria2.getGlobalOption().then(config => {
+        if (!getDownloadSaveDir()){
+          setDownloadSaveDir(config.dir);
         }
+        eventBus.emit('aria2_connect', config);
         this.setState({online: true});
       }).catch(e => {
         message.error(`连接服务器失败: ${e.message}`);

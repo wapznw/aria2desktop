@@ -1,10 +1,8 @@
 import React from 'react'
 import {Avatar, Menu, Icon, Layout, Dropdown} from 'antd'
-import {getStorage, setStorage} from "../utils";
+import {eventBus, getStorage, setStorage} from "../utils";
 
 const {Sider} = Layout;
-
-const servers = getStorage('SERVER_LIST') || [];
 
 export default class LeftSider extends React.Component {
 
@@ -19,7 +17,8 @@ export default class LeftSider extends React.Component {
 
   state = {
     serverConf: {},
-    online: false
+    online: false,
+    servers: getStorage('SERVER_LIST') || []
   };
 
   constructor(props) {
@@ -29,12 +28,27 @@ export default class LeftSider extends React.Component {
     }
   }
 
+  componentWillMount(){
+    eventBus.on('server_list_change', this.handleServerListChange)
+  }
+
+  componentWillUnmount(){
+    eventBus.off('server_list_change', this.handleServerListChange)
+  }
+
+  handleServerListChange = list => {
+    this.setState({servers: list})
+  };
+
   handleMenuClick({key}) {
     let conf;
     if (key === 'default') {
       conf = getStorage('ARIA2_LOCAL_SERVER') || {}
     } else {
-      conf = servers[key]
+      conf = this.state.servers[key]
+    }
+    if (this.state.serverConf.id === conf.id) {
+      return
     }
     setStorage('ARIA2_SERVER', conf);
     if (this.props.onChangeServer) {
@@ -56,7 +70,7 @@ export default class LeftSider extends React.Component {
       <Menu onClick={this.handleMenuClick.bind(this)}>
         <Menu.Item key="default">本地默认</Menu.Item>
         <Menu.Divider/>
-        {servers && servers.map((server, index) => <Menu.Item key={index}>{server.title}</Menu.Item>)}
+        {this.state.servers && this.state.servers.map((server, index) => <Menu.Item key={index}>{server.title}</Menu.Item>)}
       </Menu>
     );
 

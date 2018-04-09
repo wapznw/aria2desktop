@@ -1,7 +1,7 @@
 import React from 'react'
 import {Layout, Popconfirm, Form, Input, InputNumber, Switch, Button, Icon, message, List, Card, Modal, Col} from 'antd'
 import device from '../device'
-import {getStorage, setStorage} from "../utils";
+import {getStorage, setStorage, eventBus} from "../utils";
 import {getDownloadSaveDir, setDownloadSaveDir} from "../aria2utils";
 
 const {Header} = Layout;
@@ -17,6 +17,10 @@ class SettingView extends React.Component {
     dataSource: dataSource
   };
 
+  constructor(props) {
+    super(props);
+  }
+
   componentWillMount() {
     // 读取配置
     if (!this.state.dir) {
@@ -26,7 +30,19 @@ class SettingView extends React.Component {
         })
       });
     }
+
+    eventBus.on('aria2_connect', this.handleAria2Connect)
   }
+
+  componentWillUnmount(){
+    eventBus.off('aria2_connect', this.handleAria2Connect)
+  }
+
+  handleAria2Connect = (config) => {
+    this.setState({
+      dir: config.dir
+    })
+  };
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -43,14 +59,16 @@ class SettingView extends React.Component {
           return it.id === item.id ? item : it
         })
       } else {
-        item.id = this.state.dataSource[this.state.dataSource.length - 1].id + 1;
+        const last = this.state.dataSource[this.state.dataSource.length - 1];
+        item.id = last ? last.id + 1 : 2;
         dataSource.push(item)
       }
       this.setState({
         visible: false,
         dataSource
       });
-      setStorage('SERVER_LIST', this.state.dataSource)
+      setStorage('SERVER_LIST', this.state.dataSource);
+      eventBus.emit('server_list_change', dataSource)
     } else {
       this.setState({
         visible: false,
@@ -129,14 +147,17 @@ class SettingView extends React.Component {
                     description={item.host + ':' + item.port}
                   />
                   <List.Item.Meta
-                    title={<div style={item.secure ? {color: '#52c41a'} : {}}><Icon type={item.secure ? 'lock' : 'unlock'} />{item.secure ? '加密' : '未加密'}</div>}
+                    title={<div style={item.secure ? {color: '#52c41a'} : {}}><Icon
+                      type={item.secure ? 'lock' : 'unlock'}/>{item.secure ? '加密' : '未加密'}</div>}
                     description={item.secret}
                   />
                   <div>
-                    <div><Button size="small" onClick={() => this.setState({visible: true, item: item})}><Icon type="edit" /> 编辑</Button></div>
+                    <div><Button size="small" onClick={() => this.setState({visible: true, item: item})}><Icon
+                      type="edit"/> 编辑</Button></div>
                     <div style={{marginTop: 2}}>
-                      <Popconfirm title="Are you sure delete this config?" onConfirm={() => this.handleDelete(item)} okText="Yes" cancelText="No">
-                        <Button type="danger" size="small"><Icon type="delete" /> 删除</Button>
+                      <Popconfirm title="Are you sure delete this config?" onConfirm={() => this.handleDelete(item)}
+                                  okText="Yes" cancelText="No">
+                        <Button type="danger" size="small"><Icon type="delete"/> 删除</Button>
                       </Popconfirm>
                     </div>
                   </div>
@@ -150,7 +171,7 @@ class SettingView extends React.Component {
     );
   }
 
-  renderModal(item){
+  renderModal(item) {
     return (
       <Modal
         wrapClassName="SettingModal"
