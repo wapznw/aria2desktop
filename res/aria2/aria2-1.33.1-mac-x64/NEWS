@@ -1,0 +1,110 @@
+aria2 1.33.1
+============
+
+Release Note
+------------
+
+This release fixes a bug that causes high CPU usage in mingw build.
+
+Changes
+-------
+
+* mingw: Fix high CPU usage in BitTorrent downloads
+
+  This commit fixes high CPU usage in BitTorrent downloads.  Only
+  mingw build is affected by this bug.
+
+  Thank you kwkam for identifying the cause of the issue, and helping
+  debugging this patch.
+
+
+
+aria2 1.33.0
+============
+
+Release Note
+------------
+
+This release fixes several bugs, and add new features.
+
+Changes
+-------
+
+* Include arm in a filename of android zip
+
+* Upgrade base image of Dockerfile.mingw to ubuntu:16.04
+
+* wintls: Potential fix for undecrypted read
+
+  GH-1021
+
+* libaria2: Return last error code from DownloadHandle::getErrorCode
+
+  GH-991
+
+* Windows: pass writefds also as exceptfds to select()
+
+  winsock notifies connect() failures on exceptfds instead of
+  writefds.
+
+  Fixes GH-969
+  Fixes GH-975
+
+* libuv: use pkg-config
+
+* FeatureConfig: align text
+
+* Update Dockerfile.mingw
+
+  avoid docker cache when using git
+
+  Patch from qweaszxcdf
+
+  GH-970
+
+* Add --peer-agent option
+
+  Add --peer-agent for setting the version/user agent used in the
+  extended handshake protocol for bittorrent.
+
+  Patch from Kurt Kartaltepe
+
+  GH-947
+
+* OSX: Allow to specify a build
+
+* OSX: update c-ares
+
+* [Docs, libaria2] Fix type of obj pushed into options vector
+
+  aria::KeyVals is a vector of pair of std strings, therefore the type
+  of object being pushed should be std::pair<std::string,
+  std::string>, however in the docs, the type of the said object is
+  KeyVals.  If one follows the docs, their code will fail to compile.
+
+  Patch from geetam
+
+  GH-941
+
+* AppleTLS: Silence cipher suite selection
+
+* Unbreak build OSX build
+
+* Update macOS versions
+
+* Add --bt-load-saved-metadata option
+
+  Before getting torrent metadata from DHT when downloading with
+  magnet link, first try to read file saved by --bt-save-metadata
+  option. If it is successful, then skip downloading metadata from
+  DHT.  By default, this feature is turned off.
+
+  GH-909
+
+* Fix regression in bfc54d0b9a694e5d87efd8ed11b5393bc4b66f93
+
+  Don't save control file if --auto-save-interval is 0.
+
+  GH-917
+
+* Fix infinite loop bug when file is not found

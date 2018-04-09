@@ -27,6 +27,8 @@ export default class Aria2Client {
       };
     }
     this.aria2 = new Aria2(this.config);
+    this.initAria2(this.aria2);
+
     Aria2.methods.forEach((name, i) => {
       if (i > 3){
         this[name] = (...args) => {
@@ -36,16 +38,27 @@ export default class Aria2Client {
     })
   }
 
-  connect() {
-    const aria2 = this.aria2;
+  initAria2(aria2){
     aria2.onclose = () => {
       if (this._timer != null) clearInterval(this._timer);
+      console.log('aria2 closed');
+      setTimeout(()=> {
+        if (this.aria2.socket.readyState === 3){
+          this.connect()
+        }
+      }, 10000);
+      if ('onClose' in this) {
+        this.onClose()
+      }
     };
-    aria2.open().then(async () => {
+    aria2.onopen = async () => {
+      if ('onConnect' in this) {
+        this.onConnect()
+      }
       if ((await this.refreshTasks()).length) {
         this.startRefresh()
       }
-    });
+    };
     aria2.onDownloadStart = /*aria2.onDownloadPause = aria2.onDownloadStop =*/ ({gid}) => {
       this.startRefresh()
     };
@@ -58,7 +71,20 @@ export default class Aria2Client {
         }
       })
     };
-    this.aria2 = aria2;
+  }
+
+  setOptions(opts){
+    opts && Object.keys(opts).forEach(key => {
+      this.aria2[key] = opts[key];
+    })
+  }
+
+  connect() {
+    return this.aria2.open()
+  }
+
+  close(){
+    return this.aria2.close();
   }
 
   addUri(...args){

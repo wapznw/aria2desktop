@@ -1,0 +1,37 @@
+commit dd0413ee5062ffe5212655c7953c28737a5098f3 (HEAD, tag: release-1.33.1, origin/release-1.33.x, origin/HEAD, release-1.33.x)
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2017-11-08
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2017-11-08
+
+    android: Update third-party libraries
+
+commit bfb8d6dcac3f2e8f7233700b014f0956857e897f
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2017-11-06
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2017-11-06
+
+    Update NEWS
+
+commit b9d74ca88bb8d8c53ccbfc7e95e05f9e2a155455
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2017-11-06
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2017-11-06
+
+    Bump up version number to 1.33.1
+
+commit 5b677fa7f2cc2280628d41bc1b9ea57f57e82dd0
+Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+AuthorDate: 2017-11-05
+Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+CommitDate: 2017-11-06
+
+    mingw: Fix high CPU usage in BitTorrent downloads
+    
+    This commit fixes high CPU usage in BitTorrent downloads.  Only mingw
+    build is affected by this bug.
+    
+    Thank you kwkam for identifying the cause of the issue, and helping
+    debugging this patch.

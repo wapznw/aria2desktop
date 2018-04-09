@@ -28,10 +28,11 @@
 }
 
 .userInfo {
-  padding: 20px 0 10px 20px;
+  padding: 20px 0 10px 0px;
   color: white;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .device-macOs.device-electron .userInfo {
@@ -41,16 +42,40 @@
 .userName {
   line-height: 1.2;
   margin-left: 4px;
-  font-size: 14px;
+  color: white;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.userName .ant-dropdown-trigger {
+  min-width: 70px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.userName .ant-badge-status-text {
+  color: white;
+  font-size: 12px;
+  max-width: 90px;
 }
 
 .userVip {
   background-color: #da5444;
   display: inline-block;
-  padding: 0 6px;
+  padding: 0 3px;
   border-radius: 3px;
   font-style: italic;
   font-size: 10px;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.userVip.success {
+  background-color: #52c41a;
 }
 
 .header-title {

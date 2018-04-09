@@ -3,13 +3,14 @@
   "version": "0.1.1",
   "private": true,
   "main": "main.js",
+  "author": "wapznw <wapznw@gmail.com>",
+  "homepage": "https://github.com/wapznw/aria2desktop",
   "devDependencies": {
     "electron": "^1.8.4"
   },
   "build": {
     "appId": "com.wendaojiang.aria2desktop",
-    "productName": "Aria2Desktop",
-    "asar": false,
+    "asar": true,
     "mac": {
       "icon": "aria2icon.icns",
       "target": "dmg",
@@ -18,10 +19,13 @@
     "win": {
       "icon": "aria2icon.ico",
       "target": {
-        "target": "nsis",
-        "arch": [
-          "x64"
-        ]
+        "target": "nsis"
+      }
+    },
+    "linux": {
+      "icon": "aria2icon.png",
+      "target": {
+        "target": "deb"
       }
     }
   },

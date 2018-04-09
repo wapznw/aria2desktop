@@ -1,8 +1,9 @@
 const {app, BrowserWindow, Menu, ipcMain, shell, Tray, dialog} = require('electron');
 const child_process = require('child_process');
-const path = require('path')
-const fs = require('fs')
-const url = require('url')
+const path = require('path');
+const fs = require('fs');
+
+const ARIA2DESKTOP_DEV = process.env.ARIA2DESKTOP_DEV === 'true';
 
 const template = [
   {
@@ -41,7 +42,9 @@ const template = [
     submenu: [
       {
         label: '在线帮助',
-        click () { shell.openExternal('https://github.com/wapznw/aria2desktop') }
+        click() {
+          shell.openExternal('https://github.com/wapznw/aria2desktop')
+        }
       }
     ]
   }
@@ -64,22 +67,39 @@ if (process.platform === 'darwin') {
   });
 }
 
-app.setName('Aria2');
 let menu = Menu.buildFromTemplate(template);
 
 let mainWindow;
 
 const aria2dir = path.join(__dirname, './aria2cli');
-const aria2Cli = path.resolve(aria2dir, 'aria2c');
+
+const aria2home = path.join(process.env.HOME, app.getName());
+const aria2Cli = path.resolve(aria2home, 'aria2c');
 const aria2DownloadDir = path.join(process.env.HOME, 'Downloads');
-const sessionFile = path.join(process.env.HOME, '.aria2.session');
-const aria2ConfFile = path.join(process.env.HOME, '.aria2.conf');
-if (!fs.existsSync(sessionFile)) {
-  fs.writeFileSync(sessionFile, "")
+const sessionFile = path.join(aria2home, 'aria2.session');
+const aria2ConfFile = path.join(aria2home, 'aria2.conf');
+
+if (!fs.existsSync(aria2home)) {
+  fs.mkdirSync(aria2home);
 }
-if (!fs.existsSync(aria2ConfFile)){
-  fs.writeFileSync(aria2ConfFile, fs.readFileSync(path.resolve(aria2dir, 'aria2.conf')))
-}
+
+fs.readdirSync(aria2dir).forEach(file => {
+  var src = path.join(aria2dir, file),
+    dest = path.join(aria2home, file);
+  if (!fs.existsSync(dest)) {
+    console.log('释放文件: ', src);
+    if ('copyFileSync' in fs) {
+      fs.copyFileSync(src, dest);
+    } else {
+      fs.writeFileSync(dest, fs.readFileSync(src));
+      if (file === 'aria2c') {
+        fs.chmodSync(dest, 755)
+      }
+    }
+  }
+});
+
+const secret = Math.random().toString(32).substr(2);
 const aria2Conf = [
   '--dir', aria2DownloadDir,
   '--conf-path', aria2ConfFile,
@@ -99,14 +119,14 @@ const aria2Conf = [
   '--disk-cache', '0M',
   '--max-tries', 0,
   '--retry-wait', 5,
-  '--rpc-secret', 'xxxx'
+  '--rpc-secret', secret
 ];
 
-if (fs.existsSync(aria2Cli)){
-
+if (fs.existsSync(aria2Cli)) {
+  console.log('rpc-secret: ',secret);
   const worker = child_process.spawn(aria2Cli, aria2Conf);
 
-  worker.stdout.on('data', function(data){
+  worker.stdout.on('data', function (data) {
     console.log(data.toString());
   });
 
@@ -126,8 +146,11 @@ function createWindow() {
     show: false,
     title: 'Aria2Desktop'
   });
-  mainWindow.loadURL('http://localhost:3000/');
-  // mainWindow.loadURL(`file://${process.cwd()}/electron.asar/index.html`)
+
+  const loadUrl = ARIA2DESKTOP_DEV ? 'http://localhost:3000/' : `file://${process.cwd()}/app.asar/index.html`;
+  mainWindow.loadURL(loadUrl + '#' + secret);
+  console.log(loadUrl + '#' + secret);
+
   // mainWindow.loadURL(url.format({
   //   pathname: path.join(__dirname, 'index.html'),
   //   protocol: 'file:',
@@ -142,7 +165,7 @@ function createWindow() {
     mainWindow.close()
   });
   ipcMain.on('set-window-maximize', function () {
-    mainWindow.isMaximized() ? mainWindow.unmaximize () : mainWindow.maximize()
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
   });
   ipcMain.on('set-window-minimize', function () {
     mainWindow.minimize()
@@ -159,9 +182,11 @@ function createWindow() {
   })
 }
 
+let tray;
+
 app.on('ready', function () {
-  createWindow()
-  const tray = new Tray(path.join(__dirname, 'aria2icon_16.png'));
+  createWindow();
+  tray = new Tray(path.join(__dirname, 'aria2icon_16.png'));
   tray.setToolTip('aria2 desktop');
   const contextMenu = Menu.buildFromTemplate([
     {role: 'about', label: '关于' + app.getName()},
@@ -169,19 +194,19 @@ app.on('ready', function () {
     {role: 'hide', label: '隐藏'},
     {type: 'separator'},
     {role: 'quit', label: '完全退出'}
-  ])
+  ]);
   // tray.setContextMenu(contextMenu)
   tray.on('click', () => {
     if (mainWindow === null) {
       createWindow()
     } else {
-      if (mainWindow.isVisible() && !mainWindow.isFocused()){
+      if (mainWindow.isVisible() && !mainWindow.isFocused()) {
         mainWindow.focus();
       } else {
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
       }
     }
-  })
+  });
   tray.on('right-click', () => {
     tray.popUpContextMenu(contextMenu)
   })
