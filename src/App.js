@@ -21,8 +21,9 @@ const defaultServer = {
 setStorage('ARIA2_LOCAL_SERVER', defaultServer);
 let conf = getStorage('ARIA2_SERVER');
 if (conf) {
-  if (conf.host === defaultServer.host && conf.port === defaultServer.port) {
+  if (conf.id === 1) {
     conf = defaultServer;
+    setStorage('ARIA2_SERVER', defaultServer)
   }
 } else {
   conf = defaultServer
@@ -52,11 +53,11 @@ class App extends Component {
 
     this.aria2.onConnect = async () => {
       this.aria2.getGlobalOption().then(config => {
+        this.setState({online: true});
         if (!getDownloadSaveDir()){
           setDownloadSaveDir(config.dir);
         }
         eventBus.emit('aria2_connect', config);
-        this.setState({online: true});
       }).catch(e => {
         message.error(`连接服务器失败: ${e.message}`);
         this.setState({online: false})

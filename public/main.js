@@ -2,7 +2,9 @@ const {app, BrowserWindow, Menu, ipcMain, shell, Tray, dialog} = require('electr
 const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const url = require('url');
 
+const userHomeDir = require('os').homedir()
 const ARIA2DESKTOP_DEV = process.env.ARIA2DESKTOP_DEV === 'true';
 
 const template = [
@@ -73,9 +75,9 @@ let mainWindow;
 
 const aria2dir = path.join(__dirname, './aria2cli');
 
-const aria2home = path.join(process.env.HOME, app.getName());
+const aria2home = path.join(userHomeDir, app.getName());
 const aria2Cli = path.resolve(aria2home, 'aria2c');
-const aria2DownloadDir = path.join(process.env.HOME, 'Downloads');
+const aria2DownloadDir = path.join(userHomeDir, 'Downloads');
 const sessionFile = path.join(aria2home, 'aria2.session');
 const aria2ConfFile = path.join(aria2home, 'aria2.conf');
 
@@ -147,15 +149,13 @@ function createWindow() {
     title: 'Aria2Desktop'
   });
 
-  const loadUrl = ARIA2DESKTOP_DEV ? 'http://localhost:3000/' : `file://${process.cwd()}/app.asar/index.html`;
+  const loadUrl = ARIA2DESKTOP_DEV ? 'http://localhost:3000/' : url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  });
   mainWindow.loadURL(loadUrl + '#' + secret);
-  console.log(loadUrl + '#' + secret);
-
-  // mainWindow.loadURL(url.format({
-  //   pathname: path.join(__dirname, 'index.html'),
-  //   protocol: 'file:',
-  //   slashes: true
-  // }));
+  console.log('loadUrl', loadUrl + '#' + secret);
 
   mainWindow.on('closed', function () {
     mainWindow = null
