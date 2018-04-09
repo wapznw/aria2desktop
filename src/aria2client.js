@@ -79,8 +79,12 @@ export default class Aria2Client {
     })
   }
 
-  connect() {
-    return this.aria2.open()
+  async connect() {
+    try {
+      return await this.aria2.open()
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   close(){

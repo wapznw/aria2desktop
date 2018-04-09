@@ -1,4 +1,5 @@
 import url from 'url'
+import {getStorage, setStorage} from "./utils";
 
 export function getTitle(result) {
   const dir = result.dir;
@@ -100,6 +101,14 @@ export function getFileExt(file) {
   return file.substr(file.lastIndexOf('.') + 1)
 }
 
+export function getCurrentConfig() {
+  return getStorage('ARIA2_SERVER') || {}
+}
 
+export function getDownloadSaveDir() {
+  return getStorage(`ARIA2_DOWNLOAD_DIR${getCurrentConfig().id}`)
+}
 
-
+export function setDownloadSaveDir(dir) {
+  return setStorage(`ARIA2_DOWNLOAD_DIR${getCurrentConfig().id}`, dir)
+}

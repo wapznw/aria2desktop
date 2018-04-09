@@ -177,7 +177,7 @@ function createWindow() {
   });
 
   mainWindow.once('ready-to-show', () => {
-    Menu.setApplicationMenu(menu)
+    Menu.setApplicationMenu(process.platform === 'darwin' ? menu : null);
     mainWindow.show()
   })
 }

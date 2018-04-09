@@ -1,13 +1,10 @@
 import React from 'react'
 import {Avatar, Menu, Icon, Layout, Dropdown} from 'antd'
+import {getStorage, setStorage} from "../utils";
 
 const {Sider} = Layout;
 
-const servers = [
-  {title: '家', host: 'home.xxx.ccc.eee.aaaa', port: 6800, secret: 'aaaax'},
-  {title: '家里路由器', host: '192.168.1.121', port: 6800, secret: 'aaa3a'},
-  {title: '公司电脑', host: '121.231.32.178', port: 6800, secret: 'aaaaax'}
-];
+const servers = getStorage('SERVER_LIST') || [];
 
 export default class LeftSider extends React.Component {
 
@@ -35,10 +32,11 @@ export default class LeftSider extends React.Component {
   handleMenuClick({key}) {
     let conf;
     if (key === 'default') {
-      conf = localStorage.getItem('ARIA2_LOCAL_SERVER') ? JSON.parse(localStorage.getItem('ARIA2_LOCAL_SERVER')) : {}
+      conf = getStorage('ARIA2_LOCAL_SERVER') || {}
     } else {
       conf = servers[key]
     }
+    setStorage('ARIA2_SERVER', conf);
     if (this.props.onChangeServer) {
       this.props.onChangeServer(conf)
     }

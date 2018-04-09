@@ -4,7 +4,7 @@ import {
   Modal, Input, Divider, Menu, message,
   Form, Upload, Popconfirm, Card
 } from 'antd'
-import {bytesToSize, getStatusText, getFileExt} from '../aria2utils'
+import {bytesToSize, getStatusText, getFileExt, getDownloadSaveDir} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
 
@@ -48,7 +48,7 @@ export default class DownloadView extends Component {
     }
   }
 
-  componentDidMount(){
+  componentWillMount(){
 
     document.ondragover = (e) => {
       if(!this.state.visible){
@@ -60,7 +60,6 @@ export default class DownloadView extends Component {
       e.preventDefault();  //只有在ondragover中阻止默认行为才能触发 ondrop 而不是 ondragleave
     };
     document.ondrop = (e) => {
-      console.log(e.dataTransfer.files);
       const files = e.dataTransfer.files;
       if (this.state.taskType === 'bt' && files && files.length && getFileExt(files[0].name) !== 'torrent') {
         this.setState({
@@ -132,7 +131,7 @@ export default class DownloadView extends Component {
   };
 
   getSaveDir(){
-    return localStorage.getItem('DEFAULT_SAVE_DIR')
+    return getDownloadSaveDir()
   }
 
   onItemClick(item) {
@@ -291,7 +290,7 @@ export default class DownloadView extends Component {
           <Card.Grid style={gridStyle}>
             文件大小: {bytesToSize(item.totalLength)}
           </Card.Grid>
-          <Card.Grid style={gridStyle}>
+          <Card.Grid title={item.dir} style={gridStyle}>
             存储目录: {item.dir}
           </Card.Grid>
           <Card.Grid style={gridStyle}>
@@ -313,7 +312,7 @@ export default class DownloadView extends Component {
             连接数: {item.connections}
           </Card.Grid>
           {item.files && item.files.length ? item.files.map(file => (
-            <Card.Grid style={{width: '100%', padding: 5}} key={file.path}>
+            <Card.Grid title={file.path} style={{width: '100%', padding: 5}} key={file.path}>
               文件位置: {file.path}
               <a className="device-electron-show"
                  style={{marginLeft: 5}} title={'在文件管理器中显示'}

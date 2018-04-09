@@ -173,6 +173,72 @@
 .download-item-details-card .ant-tabs-large .ant-tabs-tab {
   padding: 6px;
 }
+
+.download-item-details-card .ant-card-grid {
+  overflow: hidden;
+  word-break: break-word;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .download-item-details-card .ant-card-grid:hover{
   box-shadow: none;
+}
+
+/* 设置界面 */
+.Setting .ant-list-item-content {
+  width: auto;
+}
+.Setting .ant-card-body {
+  padding: 1px 0px;
+}
+
+.Setting .ant-card-head {
+  padding: 0;
+  min-height: initial;
+}
+
+.Setting .ant-list-item {
+  padding: 5px;
+}
+
+.Setting .ant-card-head-title {
+  padding: 0;
+}
+
+.Setting .ant-card-extra {
+  padding: 0;
+}
+
+
+.SettingModal .ant-modal-close-x {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+}
+
+.SettingModal .ant-modal-body {
+  padding: 10px;
+  background-color: #f7f7f7;
+}
+
+.SettingModal .ant-modal-header {
+  padding: 10px 12px;
+}
+
+.SettingModal .ant-modal-title {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+
+.SettingModal .ant-modal-body {
+  padding: 5px 24px;
+}
+.SettingModal .ant-form-item {
+  margin-bottom: 0;
+}
+
+.Setting .ant-btn-group > .ant-btn {
+  line-height: 1;
 }

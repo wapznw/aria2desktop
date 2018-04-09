@@ -8,6 +8,7 @@ import DownloadView from './components/DownloadView'
 import SettingView from './components/SettingView'
 
 import './App.css';
+import {getStorage, setStorage} from "./utils";
 
 const defaultServer = {
   host: '127.0.0.1',
@@ -15,16 +16,10 @@ const defaultServer = {
   secure: false,
   secret: window.location.hash.split('#')[1]
 };
-localStorage.setItem('ARIA2_LOCAL_SERVER', JSON.stringify(defaultServer));
-let conf = localStorage.getItem('ARIA2_SERVER');
-try {
-  if (conf) {
-    conf = JSON.parse(conf);
-    if (conf.host === defaultServer.host && conf.port === defaultServer.port) {
-      conf = defaultServer;
-    }
-  }
-} catch (e) {
+setStorage('ARIA2_LOCAL_SERVER', defaultServer);
+let conf = getStorage('ARIA2_SERVER');
+if (conf.host === defaultServer.host && conf.port === defaultServer.port) {
+  conf = defaultServer;
 }
 
 if (!conf) {
@@ -53,9 +48,11 @@ class App extends Component {
     });
 
     this.aria2.onConnect = async () => {
-      this.aria2.getSessionInfo().then(res => {
-        console.log(res);
-        this.setState({online: true})
+      this.aria2.getGlobalOption().then(res => {
+        if (!getStorage(`ARIA2_DOWNLOAD_DIR${conf.id}`)){
+          setStorage(`ARIA2_DOWNLOAD_DIR${conf.id}`, res.dir);
+        }
+        this.setState({online: true});
       }).catch(e => {
         message.error(`连接服务器失败: ${e.message}`);
         this.setState({online: false})
@@ -66,7 +63,7 @@ class App extends Component {
     }
   }
 
-  componentDidMount(){
+  componentWillMount(){
     this.aria2.connect();
   }
 
@@ -78,13 +75,12 @@ class App extends Component {
 
   async onChangeServer(server){
     const hide = message.loading('正在切换Aria2服务器...', 0);
-    localStorage.setItem('ARIA2_SERVER', JSON.stringify(server));
     this.setState({
       actives: [],
       waitings: [],
       stopped: []
     });
-    await this.aria2.close();
+    this.aria2.close();
     try {
       this.aria2.setOptions(server);
       await this.aria2.connect()
@@ -109,7 +105,7 @@ class App extends Component {
         <LeftSider defaultMenu={this.state.menu}
                    defaultServerConf={conf}
                    online={this.state.online}
-                   onChangeServer={this.onChangeServer.bind(this)}
+                   onChangeServer={async c => await this.onChangeServer(c)}
                    onMenuClick={(item) => this.onMenuClick(item)}/>
         {this.state.menu && this.state.menu !== 'setting' ?
           <DownloadView aria2={this.aria2} currentMenu={this.state.menu} data={data}/>:
