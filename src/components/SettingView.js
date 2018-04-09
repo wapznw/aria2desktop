@@ -2,7 +2,7 @@ import React from 'react'
 import {Layout, Popconfirm, Form, Input, InputNumber, Switch, Button, Icon, message, List, Card, Modal, Col} from 'antd'
 import device from '../device'
 import {getStorage, setStorage, eventBus} from "../utils";
-import {getDownloadSaveDir, setDownloadSaveDir} from "../aria2utils";
+import {getDownloadSaveDir, isRemoteServer, setDownloadSaveDir} from "../aria2utils";
 
 const {Header} = Layout;
 const {dialog} = window.require('electron').remote;
@@ -111,7 +111,7 @@ class SettingView extends React.Component {
   }
 
   render() {
-    const addonAfter = device.electron ? <label onClick={() => this.openFileDialog()}>选择目录</label> : null;
+    const addonAfter = device.electron && !isRemoteServer() ? <label onClick={() => this.openFileDialog()}>选择目录</label> : null;
     return (
       <Layout className={'Setting'}>
         <Header className="darg-move-window header-toolbar">设置</Header>

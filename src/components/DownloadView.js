@@ -4,7 +4,7 @@ import {
   Modal, Input, Divider, Menu, message,
   Form, Upload, Popconfirm, Card
 } from 'antd'
-import {bytesToSize, getStatusText, getFileExt, getDownloadSaveDir} from '../aria2utils'
+import {bytesToSize, getStatusText, getFileExt, getDownloadSaveDir, isRemoteServer} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
 
@@ -29,7 +29,8 @@ export default class DownloadView extends Component {
       data: props.data || [],
       selectedItem: null,
       key: 'tab1',
-      noTitleKey: 'info'
+      noTitleKey: 'info',
+      isRemoteServer: isRemoteServer()
     };
     props.aria2.getGlobalOption().then(config => {
       this.setState({config})
@@ -314,7 +315,7 @@ export default class DownloadView extends Component {
           {item.files && item.files.length ? item.files.map(file => (
             <Card.Grid title={file.path} style={{width: '100%', padding: 5}} key={file.path}>
               文件位置: {file.path}
-              <a className="device-electron-show"
+              <a className="device-electron-show server-remote-hide"
                  style={{marginLeft: 5}} title={'在文件管理器中显示'}
                  onClick={()=>shell.showItemInFolder(file.path)}>
                 <Icon type="search" />

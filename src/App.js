@@ -9,7 +9,7 @@ import SettingView from './components/SettingView'
 
 import './App.css';
 import {eventBus, getStorage, setStorage} from "./utils";
-import {getDownloadSaveDir, setDownloadSaveDir} from "./aria2utils";
+import {getDownloadSaveDir, isRemoteServer, setDownloadSaveDir} from "./aria2utils";
 
 const defaultServer = {
   id: 1,
@@ -35,7 +35,8 @@ class App extends Component {
     waitings: [],
     stopped: [],
     menu: 'active',
-    online: false
+    online: false,
+    isRemoteServer: isRemoteServer()
   };
 
   constructor(props){
@@ -81,7 +82,8 @@ class App extends Component {
     this.setState({
       actives: [],
       waitings: [],
-      stopped: []
+      stopped: [],
+      isRemoteServer: isRemoteServer()
     });
     this.aria2.close();
     try {
@@ -104,7 +106,7 @@ class App extends Component {
       data = this.state.stopped.filter(item => item.status !== 'complete')
     }
     return (
-      <Layout className="App">
+      <Layout className={`App ${this.state.isRemoteServer ? 'server-is-remote' : ''}`}>
         <LeftSider defaultMenu={this.state.menu}
                    defaultServerConf={conf}
                    online={this.state.online}

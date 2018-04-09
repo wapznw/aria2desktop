@@ -112,3 +112,8 @@ export function getDownloadSaveDir() {
 export function setDownloadSaveDir(dir) {
   return setStorage(`ARIA2_DOWNLOAD_DIR${getCurrentConfig().id}`, dir)
 }
+
+export function isRemoteServer() {
+  const conf = getCurrentConfig();
+  return conf && conf.id !== 1
+}
