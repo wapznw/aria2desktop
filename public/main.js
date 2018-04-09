@@ -73,7 +73,7 @@ let menu = Menu.buildFromTemplate(template);
 
 let mainWindow;
 
-const aria2dir = path.join(__dirname, './aria2cli');
+const aria2dir = path.resolve(__dirname, 'aria2cli');
 
 const aria2home = path.join(userHomeDir, app.getName());
 const aria2Cli = path.resolve(aria2home, 'aria2c');
