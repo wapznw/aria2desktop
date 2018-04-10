@@ -14,7 +14,7 @@
     "mac": {
       "icon": "aria2icon.icns",
       "target": "dmg",
-      "category": "com.wendaojiang.aria2"
+      "category": "Utility"
     },
     "win": {
       "icon": "aria2icon.ico",
@@ -23,7 +23,7 @@
       }
     },
     "linux": {
-      "icon": "aria2icon.png",
+      "category": "Utility",
       "target": {
         "target": "deb"
       }

@@ -8,6 +8,7 @@ ARIA2_VERSION=1.33.1
 # build linux x64
 # build linux ia32
 build () {
+clean
 PLATFORM=$1
 ARCH=$2
 ARIC2_CLI="${ARIA2_RES}/aria2-${ARIA2_VERSION}-${PLATFORM}-${ARCH}/aria2c"
@@ -32,7 +33,6 @@ if [ x"$(uname)" != x"Darwin" ];then
 fi
 
 case $1 in all)
-clean
 build mac x64
 build win x64
 #build win ia32
@@ -47,7 +47,6 @@ fi
 electron app.asar
 ;;
 win|mac|linux)
-clean
 arch=$2
 if [ x"" == x"$arch" ]; then
    arch=x64

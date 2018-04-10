@@ -35,6 +35,13 @@ npm install -g electron-builder
 ```
 生成的文件在 $(projectRoot)/build/dist 目录下
 
+## windows10运行截图
+![](screenshot/windows10-aria2desktop.png)
+
+## Ubuntu 运行截图
+![](screenshot/ubuntu-22B2E901F8BA.png)
+
+## Mac 运行截图
 ![image](screenshot/WX20180408-172402.png)
 ---
 ![image description](screenshot/WX20180408-172436.png)
@@ -51,9 +58,3 @@ npm install -g electron-builder
 
 ---
 ![image description](screenshot/WX20180408-172938.png)
-
-## windows10运行截图
-![](screenshot/windows10-aria2desktop.png)
-
-## Ubuntu 运行截图
-![](screenshot/ubuntu-22B2E901F8BA.png)
