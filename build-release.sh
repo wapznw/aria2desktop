@@ -35,7 +35,7 @@ case $1 in all)
 clean
 build mac x64
 build win x64
-build win ia32
+#build win ia32
 build linux x64
 ;;
 asar-test)
