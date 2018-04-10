@@ -6,13 +6,13 @@
 如果你只想体验一下，直接下载打包好的安装程序就好了。
 
 ---
-[下载Mac版](releases)
+[下载Mac版](../../releases)
 
 
-[下载Windows版](releases)
+[下载Windows版](../../releases)
 
 
-[下载Ubuntu版](releases)
+[下载Ubuntu版](../../releases)
 > Ubuntu 需要先安装 aria2_1.33.1-1_amd64.deb
 
 编译
