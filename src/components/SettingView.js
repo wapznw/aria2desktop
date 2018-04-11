@@ -17,10 +17,6 @@ class SettingView extends React.Component {
     dataSource: dataSource
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     // 读取配置
     if (!this.state.dir) {
@@ -83,10 +79,11 @@ class SettingView extends React.Component {
   };
 
   handleDelete = (item) => {
+    let dataSource = this.state.dataSource.filter(it => it.id !== item.id)
     this.setState({
-      dataSource: this.state.dataSource.filter(it => it !== item)
+      dataSource
     });
-    setStorage('SERVER_LIST', this.state.dataSource)
+    setStorage('SERVER_LIST', dataSource)
   };
 
   handleChange = (v, k) => {
@@ -135,7 +132,7 @@ class SettingView extends React.Component {
                 extra={<Button size="small"
                                type="primary"
                                icon="plus"
-                               style={{marginBottom: 2}}
+                               style={{marginBottom: 5}}
                                onClick={() => this.setState({visible: true, item: null})}>添加</Button>}>
             <List
               itemLayout="horizontal"

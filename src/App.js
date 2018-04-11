@@ -13,6 +13,7 @@ import {getDownloadSaveDir, isRemoteServer, setDownloadSaveDir} from "./aria2uti
 
 const defaultServer = {
   id: 1,
+  title: '本地默认',
   host: '127.0.0.1',
   port: 6800,
   secure: false,

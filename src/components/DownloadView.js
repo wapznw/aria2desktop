@@ -7,6 +7,7 @@ import {
 import {bytesToSize, getStatusText, getFileExt, getDownloadSaveDir, isRemoteServer} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
+import EmptyContent from "./EmptyContent";
 
 const {shell} = window.require('electron').remote;
 
@@ -30,7 +31,8 @@ export default class DownloadView extends Component {
       selectedItem: null,
       key: 'tab1',
       noTitleKey: 'info',
-      isRemoteServer: isRemoteServer()
+      isRemoteServer: isRemoteServer(),
+      deviceWeb: document.body.parentElement.classList.contains('device-fullscreen')
     };
     props.aria2.getGlobalOption().then(config => {
       this.setState({config})
@@ -200,6 +202,7 @@ export default class DownloadView extends Component {
     const selectedItem = this.state.selectedItem;
     const disableToolbar = this.props.currentMenu !== 'active';
     const selectedStatus = selectedItem && selectedItem.status;
+    const classList = document.body.parentElement.classList;
 
     return (
       <Layout>
@@ -225,12 +228,18 @@ export default class DownloadView extends Component {
             <Button disabled={!selectedItem || disableToolbar}
                     size={'small'} style={{marginLeft: 10}} type="danger"><Icon type={'delete'}/></Button>
           </Popconfirm>
+          <a className="resize-window" onClick={() => {
+            classList.contains('device-fullscreen') ? classList.remove('device-fullscreen') : classList.add('device-fullscreen')
+            this.setState({
+              deviceWeb: classList.contains('device-fullscreen')
+            })
+          }}><Icon type={this.state.deviceWeb ? "arrows-alt" : "shrink"} /></a>
         </Header>
         <Content>
-          <List
+          {this.state.data && this.state.data.length ?<List
             itemLayout="horizontal"
             dataSource={this.state.data}
-            renderItem={item => this.renderItem(item)}/>
+            renderItem={item => this.renderItem(item)}/> : <EmptyContent textType={this.props.currentMenu}/>}
         </Content>
         {this.renderAddTaskDialog()}
         {this.renderCard(this.state.data && selectedItem ? this.state.data.filter(item => item.gid === selectedItem.gid)[0] : null)}

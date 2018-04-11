@@ -5,6 +5,13 @@
 
 如果你只想体验一下，直接下载打包好的安装程序就好了。
 
+在线体验 http://wapznw.gitee.io/aria2desktop
+```
+本地默认Aria2服务如果启用了secret,请在url后面加上#secret。
+如http://wapznw.gitee.io/aria2desktop/#ooxxoo
+```
+
+
 ---
 [下载Mac版](../../releases)
 

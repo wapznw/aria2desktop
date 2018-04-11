@@ -7,16 +7,44 @@
   -webkit-app-region: drag
 }
 
+
 .device-electron-show {
   display: none;
 }
 
 .device-electron .device-electron-show {
-  display: inline;
+  display: initial;
 }
 
 .server-is-remote .server-remote-hide {
   display: none;
+}
+
+.header-toolbar .resize-window {
+  visibility: hidden;
+}
+
+@media all and (min-width: 1000px){
+  .device-fullscreen #root{
+    display: flex;
+    background: #cae5dc;
+  }
+  .device-fullscreen .App.ant-layout {
+    max-width: 900px;
+    height: 600px;
+    margin: auto;
+    border-radius: 6px;
+    box-shadow: 0 35px 56px rgba(0, 0, 0, .3);
+  }
+  .device-fullscreen .header-toolbar {
+    position: relative;
+  }
+  .device-web .header-toolbar .resize-window {
+    position: absolute;
+    right: 14px;
+    color: #595959;
+    visibility:visible;
+  }
 }
 
 .App, .ant-layout {
@@ -123,6 +151,7 @@
 .ant-layout-content {
   overflow: auto;
   background-color: #f7f7f7;
+  flex: 1;
 }
 
 .newTaskDialog {

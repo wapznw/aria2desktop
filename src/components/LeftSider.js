@@ -1,5 +1,5 @@
 import React from 'react'
-import {Avatar, Menu, Icon, Layout, Dropdown} from 'antd'
+import {Avatar, Menu, Icon, Layout, Dropdown, Badge} from 'antd'
 import {eventBus, getStorage, setStorage} from "../utils";
 
 const {Sider} = Layout;
@@ -82,8 +82,8 @@ export default class LeftSider extends React.Component {
             <Dropdown overlay={menu} trigger={['click']}>
               <div>{this.state.serverConf.title || '信步星空'} <Icon type="down"/></div>
             </Dropdown>
-            <div
-              className={`userVip ${this.props.online ? ' success' : ''}`}>{this.state.serverConf.host || 'VIP8'}</div>
+            {this.props.online ? <Badge status="success" text="在线"/> : <Badge status="error" text="离线"/>}
+            {/* <div className={`userVip ${this.props.online ? ' success' : ''}`}>{this.state.serverConf.host || 'VIP8'}</div> */}
           </div>
         </div>
         <Menu onClick={(item) => this.props.onMenuClick(item.key)}

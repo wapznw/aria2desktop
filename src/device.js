@@ -42,9 +42,13 @@ if (electron) {
 // Pixel Ratio
 device.pixelRatio = window.devicePixelRatio || 1;
 
-document.body.parentElement.classList.add(`device-${device.os}`);
+const classList = document.body.parentElement.classList;
+classList.add(`device-${device.os}`);
 if (device.electron ){
-  document.body.parentElement.classList.add('device-electron')
+  classList.add('device-electron')
+} else {
+  classList.add('device-web')
+  classList.add('device-fullscreen')
 }
 
 export default device;
