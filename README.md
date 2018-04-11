@@ -11,7 +11,7 @@
 如http://wapznw.gitee.io/aria2desktop/#ooxxoo
 ```
 
-
+体验完整功能请下载客服端
 ---
 [下载Mac版](../../releases)
 
