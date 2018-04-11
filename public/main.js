@@ -1,4 +1,7 @@
-const {app, BrowserWindow, Menu, ipcMain, shell, Tray, dialog} = require('electron');
+const {
+  app, BrowserWindow, Menu, ipcMain, shell,
+  Tray, dialog, globalShortcut
+} = require('electron');
 const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -232,6 +235,11 @@ app.on('ready', function () {
       tray.popUpContextMenu(Menu.buildFromTemplate(templateMenu))
     })
   }
+  globalShortcut.register('CommandOrControl+Alt+J', () => {
+    if (mainWindow && mainWindow.webContents) {
+      mainWindow.webContents.openDevTools()
+    }
+  });
 });
 
 app.on('window-all-closed', function () {
