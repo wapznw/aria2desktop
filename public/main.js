@@ -101,31 +101,43 @@ fs.readdirSync(aria2dir).forEach(file => {
   }
 });
 
-const secret = Math.random().toString(32).substr(2);
+let secret = Math.random().toString(32).substr(2);
+if (fs.existsSync(aria2ConfFile)) {
+  let confContent = fs.readFileSync(aria2ConfFile).toString();
+  let c = confContent.replace(/\\n/g, "\n").replace(/#.+/g, '');
+  let m = c.match(/rpc-secret=(.+)/i);
+  if (m && m.length > 1) {
+    secret = m[1]
+  } else {
+    confContent = confContent.replace(/rpc-secret=(.+)/i, 'rpc-secret=' + secret);
+    fs.writeFileSync(aria2ConfFile, confContent);
+  }
+}
+
 const aria2Conf = [
   '--dir', aria2DownloadDir,
   '--conf-path', aria2ConfFile,
   '--input-file', sessionFile,
   '--save-session', sessionFile,
-  '--max-concurrent-downloads', 10,
-  '--max-connection-per-server', 16,
-  '--min-split-size', '1024K',
-  '--split', 16,
-  '--max-overall-download-limit', '0K',
-  '--max-overall-upload-limit', '0K',
-  '--max-download-limit', '0K',
-  '--max-upload-limit', '0K',
-  '--continue', 'true',
-  '--auto-file-renaming', 'true',
-  '--allow-overwrite', 'true',
-  '--disk-cache', '0M',
-  '--max-tries', 0,
-  '--retry-wait', 5,
+  // '--max-concurrent-downloads', 10,
+  // '--max-connection-per-server', 16,
+  // '--min-split-size', '1024K',
+  // '--split', 16,
+  // '--max-overall-download-limit', '0K',
+  // '--max-overall-upload-limit', '0K',
+  // '--max-download-limit', '0K',
+  // '--max-upload-limit', '0K',
+  // '--continue', 'true',
+  // '--auto-file-renaming', 'true',
+  // '--allow-overwrite', 'true',
+  // '--disk-cache', '0M',
+  // '--max-tries', 0,
+  // '--retry-wait', 5,
   '--rpc-secret', secret
 ];
 
 if (fs.existsSync(aria2Cli)) {
-  console.log('rpc-secret: ',secret);
+  console.log('rpc-secret: ', secret);
   const worker = child_process.spawn(aria2Cli, aria2Conf);
 
   worker.stdout.on('data', function (data) {
@@ -171,8 +183,7 @@ function createWindow() {
     mainWindow.minimize()
   });
 
-  ipcMain.on('open-file-dialog', function (options) {
-    console.log(options);
+  ipcMain.on('open-file-dialog', function () {
     dialog.showOpenDialog({properties: ['openDirectory', 'multiSelections']})
   });
 
@@ -182,34 +193,45 @@ function createWindow() {
   })
 }
 
-let tray;
+function toggleWindow() {
+  if (mainWindow === null) {
+    createWindow()
+  } else {
+    if (mainWindow.isVisible() && !mainWindow.isFocused()) {
+      mainWindow.focus();
+    } else {
+      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+    }
+  }
+}
 
+let tray;
+let templateMenu = [
+  {role: 'about', label: '关于' + app.getName()},
+  {type: 'separator'},
+  {role: 'quit', label: '完全退出'}
+];
+let platform = process.platform;
 app.on('ready', function () {
   createWindow();
   tray = new Tray(path.join(__dirname, 'aria2icon_16.png'));
   tray.setToolTip('aria2 desktop');
-  const contextMenu = Menu.buildFromTemplate([
-    {role: 'about', label: '关于' + app.getName()},
-    {type: 'separator'},
-    {role: 'hide', label: '隐藏'},
-    {type: 'separator'},
-    {role: 'quit', label: '完全退出'}
-  ]);
-  // tray.setContextMenu(contextMenu)
-  tray.on('click', () => {
-    if (mainWindow === null) {
-      createWindow()
-    } else {
-      if (mainWindow.isVisible() && !mainWindow.isFocused()) {
-        mainWindow.focus();
-      } else {
-        mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  if (platform === 'linux') {
+    templateMenu.splice(1, 0, {type: 'separator'}, {
+      label: '显示/隐藏',
+      click(){
+        toggleWindow()
       }
-    }
-  });
-  tray.on('right-click', () => {
-    tray.popUpContextMenu(contextMenu)
-  })
+    });
+    tray.setContextMenu(Menu.buildFromTemplate(templateMenu))
+  } else {
+    tray.on('click', () => {
+      toggleWindow()
+    });
+    tray.on('right-click', () => {
+      tray.popUpContextMenu(Menu.buildFromTemplate(templateMenu))
+    })
+  }
 });
 
 app.on('window-all-closed', function () {
