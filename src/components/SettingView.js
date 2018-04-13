@@ -95,11 +95,14 @@ class SettingView extends React.Component {
   };
 
   openFileDialog() {
-    const selectDir = dialog.showOpenDialog({
+    let selectDir = dialog.showOpenDialog({
       buttonLabel: '选取目录',
       message: '选择一个文件夹来存放下载的文件',
       properties: ['openDirectory', 'createDirectory']
     });
+    if(Array.isArray(selectDir) && selectDir.length) {
+      selectDir = selectDir[0]
+    }
     if (selectDir) {
       this.setState({
         dir: selectDir

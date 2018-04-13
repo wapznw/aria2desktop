@@ -1,13 +1,14 @@
 import React, {Component} from 'react'
 import {
-  Button, Dropdown, Icon, Layout, List,
-  Modal, Input, Divider, Menu, message,
+  Button, Dropdown, Layout, List,
+  Modal, Input, Icon, Divider, Menu, message,
   Form, Upload, Popconfirm, Card
 } from 'antd'
 import {bytesToSize, getStatusText, getFileExt, getDownloadSaveDir, isRemoteServer} from '../aria2utils'
 
 import DownloadItem from './DownloadItem'
 import EmptyContent from "./EmptyContent";
+import WindowControl from "./WindowControl";
 
 const {shell} = window.require('electron').remote;
 
@@ -31,8 +32,7 @@ export default class DownloadView extends Component {
       selectedItem: null,
       key: 'tab1',
       noTitleKey: 'info',
-      isRemoteServer: isRemoteServer(),
-      deviceWeb: document.body.parentElement.classList.contains('device-fullscreen')
+      isRemoteServer: isRemoteServer()
     };
     props.aria2.getGlobalOption().then(config => {
       this.setState({config})
@@ -202,7 +202,6 @@ export default class DownloadView extends Component {
     const selectedItem = this.state.selectedItem;
     const disableToolbar = this.props.currentMenu !== 'active';
     const selectedStatus = selectedItem && selectedItem.status;
-    const classList = document.body.parentElement.classList;
 
     return (
       <Layout>
@@ -228,12 +227,7 @@ export default class DownloadView extends Component {
             <Button disabled={!selectedItem || disableToolbar}
                     size={'small'} style={{marginLeft: 10}} type="danger"><Icon type={'delete'}/></Button>
           </Popconfirm>
-          <a className="resize-window" onClick={() => {
-            classList.contains('device-fullscreen') ? classList.remove('device-fullscreen') : classList.add('device-fullscreen')
-            this.setState({
-              deviceWeb: classList.contains('device-fullscreen')
-            })
-          }}><Icon type={this.state.deviceWeb ? "arrows-alt" : "shrink"} /></a>
+          <WindowControl/>
         </Header>
         <Content>
           {this.state.data && this.state.data.length ?<List

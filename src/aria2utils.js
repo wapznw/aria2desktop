@@ -115,5 +115,5 @@ export function setDownloadSaveDir(dir) {
 
 export function isRemoteServer() {
   const conf = getCurrentConfig();
-  return conf && conf.id !== 1
+  return conf && conf.id && conf.id !== 1
 }

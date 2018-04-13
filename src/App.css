@@ -7,6 +7,9 @@
   -webkit-app-region: drag
 }
 
+button, a, input {
+  -webkit-app-region: no-drag;
+}
 
 .device-electron-show {
   display: none;
@@ -20,23 +23,61 @@
   display: none;
 }
 
+.header-toolbar {
+  display: flex;
+  align-items: center;
+}
+
 .header-toolbar .resize-window {
   visibility: hidden;
 }
 
+.window-control {
+  position: absolute;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-web .window-control{
+  right: 15px;
+}
+
+.window-control button {
+  border: 0;
+  background-color: transparent;
+  padding: 0 7px;
+  height: 26px;
+  line-height: 26px;
+  cursor: pointer;
+  outline-style: none;
+}
+
+.window-control button:hover,
+.window-control button:active,
+.window-control button:focus{
+  background-color: transparent;
+}
+
+.device-electron.device-linux .window-control,
+.device-electron.device-windows .window-control{
+  visibility: visible;
+}
+
 @media all and (min-width: 1000px){
-  .device-fullscreen #root{
+  .device-web #root{
     display: flex;
     background: #cae5dc;
   }
-  .device-fullscreen .App.ant-layout {
+  .device-web .App.ant-layout {
     max-width: 900px;
     height: 600px;
     margin: auto;
     border-radius: 6px;
     box-shadow: 0 35px 56px rgba(0, 0, 0, .3);
   }
-  .device-fullscreen .header-toolbar {
+  .device-web .header-toolbar {
     position: relative;
   }
   .device-web .header-toolbar .resize-window {
@@ -44,6 +85,12 @@
     right: 14px;
     color: #595959;
     visibility:visible;
+  }
+  .device-web.device-fullscreen .App.ant-layout {
+    max-width: 100%;
+    height: 100%;
+    margin: auto;
+    border-radius: 0;
   }
 }
 

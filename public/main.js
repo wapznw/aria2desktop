@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const url = require('url');
 
+let platform = process.platform;
 const userHomeDir = require('os').homedir()
 const ARIA2DESKTOP_DEV = process.env.ARIA2DESKTOP_DEV === 'true';
 
@@ -55,7 +56,7 @@ const template = [
   }
 ];
 
-if (process.platform === 'darwin') {
+if (platform === 'darwin') {
   template.unshift({
     label: app.getName(),
     submenu: [
@@ -161,6 +162,7 @@ function createWindow() {
     center: true,
     titleBarStyle: 'hiddenInset',
     show: false,
+    frame: platform === 'darwin',
     title: 'Aria2Desktop'
   });
 
@@ -214,12 +216,15 @@ let templateMenu = [
   {type: 'separator'},
   {role: 'quit', label: '完全退出'}
 ];
-let platform = process.platform;
 app.on('ready', function () {
   createWindow();
   tray = new Tray(path.join(__dirname, 'aria2icon_16.png'));
   tray.setToolTip('aria2 desktop');
-  if (platform === 'linux') {
+  if (platform === 'darwin') {
+    tray.on('right-click', () => {
+      tray.popUpContextMenu(Menu.buildFromTemplate(templateMenu))
+    })
+  } else {
     templateMenu.splice(1, 0, {type: 'separator'}, {
       label: '显示/隐藏',
       click(){
@@ -227,14 +232,10 @@ app.on('ready', function () {
       }
     });
     tray.setContextMenu(Menu.buildFromTemplate(templateMenu))
-  } else {
-    tray.on('click', () => {
-      toggleWindow()
-    });
-    tray.on('right-click', () => {
-      tray.popUpContextMenu(Menu.buildFromTemplate(templateMenu))
-    })
   }
+  tray.on('click', () => {
+    toggleWindow()
+  });
   globalShortcut.register('CommandOrControl+Alt+J', () => {
     if (mainWindow && mainWindow.webContents) {
       mainWindow.webContents.openDevTools()

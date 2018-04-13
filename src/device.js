@@ -48,7 +48,7 @@ if (device.electron ){
   classList.add('device-electron')
 } else {
   classList.add('device-web')
-  classList.add('device-fullscreen')
+  // classList.add('device-fullscreen')
 }
 
 export default device;
