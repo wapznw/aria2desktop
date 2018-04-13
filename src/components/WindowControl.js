@@ -2,51 +2,55 @@ import React from 'react'
 import {Icon, Button} from 'antd'
 import device from '../device'
 
-const {ipcRenderer, remote} = window.require('electron')
-const {BrowserWindow} = remote
+const {BrowserWindow} = window.require('electron').remote
 
 const classList = document.body.parentElement.classList
 export default class WindowControl extends React.Component{
 
   state = {
-    isFullSecreen: classList.contains('device-fullscreen')
+    isFullScreen: classList.contains('device-fullscreen')
   }
 
   onResizeClick(){
     if (device.electron) {
-      ipcRenderer.send('set-window-maximize')
-      setTimeout(() => {
-        let win = BrowserWindow.getFocusedWindow()
-        if(win){
+      const win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        win.isMaximized() ? win.unmaximize() : win.maximize()
+        setTimeout(() => {
           this.setState({
-            isFullSecreen: win.isMaximized()
+            isFullScreen: win.isMaximized()
           })
-        }
-      }, 500)
+        }, 500)
+      }
     } else {
       classList.contains('device-fullscreen') ? classList.remove('device-fullscreen') : classList.add('device-fullscreen')
       this.setState({
-        isFullSecreen: classList.contains('device-fullscreen')
+        isFullScreen: classList.contains('device-fullscreen')
       })
     }
   }
 
+  onCloseClick(){
+    const win = BrowserWindow.getFocusedWindow()
+    win && win.close()
+  }
+
+  onMinimizeClick(){
+    const win = BrowserWindow.getFocusedWindow()
+    win && win.minimize()
+  }
+
   render(){
-    const {isFullSecreen} = this.state
+    const {isFullScreen} = this.state
     return (
       <div className="window-control">
-        <Button onClick={() => {
-          console.log(ipcRenderer);
-          ipcRenderer.send('set-window-minimize')
-        }} className="device-electron-show">
+        <Button onClick={this.onMinimizeClick.bind(this)} className="device-electron-show">
           <Icon type="minus" />
         </Button>
         <Button onClick={this.onResizeClick.bind(this)}>
-          <Icon type={isFullSecreen ? "shrink" : "arrows-alt"} />
+          <Icon type={isFullScreen ? "shrink" : "arrows-alt"} />
         </Button>
-        <Button onClick={()=>{
-          ipcRenderer.send('close-window')
-        }} className="device-electron-show">
+        <Button onClick={this.onCloseClick.bind(this)} className="device-electron-show">
           <Icon type="close" />
         </Button>
       </div>

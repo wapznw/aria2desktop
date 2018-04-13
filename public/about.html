@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Aria2Desktop</title>
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      background-color: #eeeeee;
+      -webkit-app-region: drag;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 0;
+      overflow: hidden;
+      color: #666666;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .appName {
+      line-height: 30px;
+      font-size: 20px;
+      margin-top: 20px;
+    }
+    span[id^="cnzz_stat_icon"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <img src="aria2icon.png" style="width: 200px;" alt="">
+  <div class="appName">About Aria2Desktop</div>
+  <span id="version"></span>
+  <div>
+    source: <a href="javascript:openSource();">aria2desktop</a>
+  </div>
+</div>
+<script>
+  try {
+    var ver = navigator.userAgent.match(/aria2-desktop\/([\d.]+)/)[1]
+    document.getElementById('version').innerHTML = 'aria2-desktop/' + ver + ' &copy; 2018 '
+  }catch (e) {
+
+  }
+  function openSource(e) {
+    window.require('electron').shell.openExternal('https://github.com/wapznw/aria2desktop')
+    e.stopPropagation()
+    e.preventDefault()
+  }
+</script>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1273415074'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/stat.php%3Fid%3D1273415074%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</body>
+</html>

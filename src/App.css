@@ -8,6 +8,7 @@
 }
 
 button, a, input {
+  /*noinspection CssUnknownProperty*/
   -webkit-app-region: no-drag;
 }
 
@@ -38,9 +39,10 @@ button, a, input {
   display: flex;
   align-items: center;
   justify-content: center;
+  visibility: hidden;
 }
 
-.device-web .window-control{
+.device-web .window-control {
   right: 15px;
 }
 
@@ -56,20 +58,22 @@ button, a, input {
 
 .window-control button:hover,
 .window-control button:active,
-.window-control button:focus{
+.window-control button:focus {
   background-color: transparent;
 }
 
 .device-electron.device-linux .window-control,
-.device-electron.device-windows .window-control{
+.device-electron.device-windows .window-control,
+.device-web .window-control{
   visibility: visible;
 }
 
-@media all and (min-width: 1000px){
-  .device-web #root{
+@media all and (min-width: 1000px) {
+  .device-web #root {
     display: flex;
     background: #cae5dc;
   }
+
   .device-web .App.ant-layout {
     max-width: 900px;
     height: 600px;
@@ -77,15 +81,18 @@ button, a, input {
     border-radius: 6px;
     box-shadow: 0 35px 56px rgba(0, 0, 0, .3);
   }
+
   .device-web .header-toolbar {
     position: relative;
   }
+
   .device-web .header-toolbar .resize-window {
     position: absolute;
     right: 14px;
     color: #595959;
-    visibility:visible;
+    visibility: visible;
   }
+
   .device-web.device-fullscreen .App.ant-layout {
     max-width: 100%;
     height: 100%;
@@ -102,7 +109,7 @@ button, a, input {
 
 .ant-layout-sider,
 .ant-menu-dark,
-.ant-menu-dark .ant-menu-sub  {
+.ant-menu-dark .ant-menu-sub {
   background-color: #32373f;
 }
 
@@ -132,6 +139,7 @@ button, a, input {
   min-width: 70px;
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .userName .ant-badge-status-text {
@@ -163,6 +171,7 @@ button, a, input {
   text-align: center;
   background-color: #e7e7e7;
 }
+
 .header-toolbar {
   background-color: #f7f7f7;
   height: 44px;
@@ -183,8 +192,9 @@ button, a, input {
   user-select: none;
   -webkit-user-select: none;
 }
+
 .ant-list-item-meta-description,
-.ant-layout-sider-children{
+.ant-layout-sider-children {
   user-select: none;
   -webkit-user-select: none;
 }
@@ -235,8 +245,12 @@ button, a, input {
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 下载详情card */
@@ -244,12 +258,14 @@ button, a, input {
 .download-item-details-card .ant-card-body {
   padding: 0;
 }
+
 .download-item-details-card .ant-card-head {
   min-height: 35px;
   padding: 0 10px;
   user-select: none;
   -webkit-user-select: none;
 }
+
 .download-item-details-card .ant-tabs-large .ant-tabs-tab {
   padding: 6px;
 }
@@ -260,7 +276,8 @@ button, a, input {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.download-item-details-card .ant-card-grid:hover{
+
+.download-item-details-card .ant-card-grid:hover {
   box-shadow: none;
 }
 
@@ -268,6 +285,7 @@ button, a, input {
 .Setting .ant-list-item-content {
   width: auto;
 }
+
 .Setting .ant-card-body {
   padding: 1px 0px;
 }
@@ -288,7 +306,6 @@ button, a, input {
 .Setting .ant-card-extra {
   padding: 0;
 }
-
 
 .SettingModal .ant-modal-close-x {
   width: 40px;
@@ -311,10 +328,10 @@ button, a, input {
   line-height: 18px;
 }
 
-
 .SettingModal .ant-modal-body {
   padding: 5px 24px;
 }
+
 .SettingModal .ant-form-item {
   margin-bottom: 0;
 }

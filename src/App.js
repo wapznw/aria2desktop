@@ -54,11 +54,12 @@ class App extends Component {
 
     this.aria2.onConnect = async () => {
       this.aria2.getGlobalOption().then(config => {
-        this.setState({online: true});
         if (!getDownloadSaveDir()){
           setDownloadSaveDir(config.dir);
         }
         eventBus.emit('aria2_connect', config);
+        this.setState({online: true});
+        console.log('aria2_connect');
       }).catch(e => {
         message.error(`连接服务器失败: ${e.message}`);
         this.setState({online: false})
@@ -87,8 +88,8 @@ class App extends Component {
       stopped: [],
       isRemoteServer: isRemoteServer()
     });
-    this.aria2.close();
     try {
+      await this.aria2.close();
       this.aria2.setOptions(server);
       await this.aria2.connect()
     } catch (e) {
