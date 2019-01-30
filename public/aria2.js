@@ -183,10 +183,14 @@
       if (!socket) {
         done()
       } else {
-        socket.addEventListener('close', function () {
+        if (socket.readyState === 3) {
           done()
-        })
-        socket.close()
+        } else {
+          socket.addEventListener('close', function () {
+            done()
+          })
+          socket.close()
+        }
       }
     }, fn)
   }

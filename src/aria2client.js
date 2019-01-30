@@ -41,7 +41,6 @@ export default class Aria2Client {
   initAria2(aria2){
     aria2.onclose = () => {
       if (this._timer != null) clearInterval(this._timer);
-      console.log('aria2 closed');
       setTimeout(()=> {
         if (this.aria2.socket.readyState === 3){
           this.connect()
@@ -79,12 +78,8 @@ export default class Aria2Client {
     })
   }
 
-  async connect() {
-    try {
-      return await this.aria2.open()
-    } catch (e) {
-      console.log(e);
-    }
+  connect() {
+    return this.aria2.open()
   }
 
   close(){

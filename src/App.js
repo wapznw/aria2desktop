@@ -89,7 +89,6 @@ class App extends Component {
         }
         eventBus.emit('aria2_connect', config);
         this.setState({online: true});
-        console.log('aria2_connect');
       }).catch(e => {
         message.error(`连接服务器失败: ${e.message}`);
         this.setState({online: false})
@@ -101,7 +100,10 @@ class App extends Component {
   }
 
   componentWillMount(){
-    this.aria2.connect();
+    this.aria2.connect().catch(() => {
+      const cfg = this.aria2.config
+      message.error(`无法连接到${cfg.host}:${cfg.port}`)
+    })
   }
 
   onMenuClick(item){
@@ -110,8 +112,8 @@ class App extends Component {
     })
   }
 
-  async onChangeServer(server){
-    const hide = message.loading('正在切换Aria2服务器...', 0);
+  async connectToServer(server){
+    const hide = message.loading(`正在连接到${server.host}:${server.port}...`, 0);
     this.setState({
       actives: [],
       waitings: [],
@@ -122,10 +124,12 @@ class App extends Component {
       await this.aria2.close();
       this.aria2.setOptions(server);
       await this.aria2.connect()
-    } catch (e) {
-      console.log(e.message);
-    } finally {
       hide();
+    } catch (e) {
+      hide();
+      if (e && e.type === 'error') {
+        message.error(`无法连接到${server.host}:${server.port}`)
+      }
     }
   }
 
@@ -143,7 +147,7 @@ class App extends Component {
         <LeftSider defaultMenu={this.state.menu}
                    defaultServerConf={conf}
                    online={this.state.online}
-                   onChangeServer={async c => await this.onChangeServer(c)}
+                   onChangeServer={async c => await this.connectToServer(c)}
                    onMenuClick={(item) => this.onMenuClick(item)}/>
         {this.state.menu && this.state.menu !== 'setting' ?
           <DownloadView aria2={this.aria2} currentMenu={this.state.menu} data={data}/>:
