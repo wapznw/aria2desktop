@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Layout, message} from 'antd';
+import {Layout, message, notification} from 'antd';
 import Aria2Client from './aria2client'
-import './device'
+import device from './device'
 
 import LeftSider from './components/LeftSider'
 import DownloadView from './components/DownloadView'
@@ -10,6 +10,8 @@ import SettingView from './components/SettingView'
 import './App.css';
 import {eventBus, getStorage, setStorage} from "./utils";
 import {getDownloadSaveDir, isRemoteServer, setDownloadSaveDir} from "./aria2utils";
+
+const {ipcRenderer} = window.require('electron')
 
 const defaultServer = {
   id: 1,
@@ -30,6 +32,29 @@ if (conf) {
   conf = defaultServer
 }
 
+const checkAria2Status = function () {
+  const status = ipcRenderer.sendSync('get-aria2-status')
+  if (status && status.error) {
+    const r = /failed to bind TCP port\s+([\d]+)/
+    const m = status.message.match(r)
+    if (m && m[1]) {
+      notification.error({
+        message: 'Aria2启动失败',
+        description: m[0]
+      })
+    }
+  } else if (status) {
+    const r = /listening on TCP port\s+(\d+)/
+    const m = status.message.match(r)
+    if (m && m[1]) {
+      notification.success({
+        message: 'Aria2启动成功',
+        description: m[0]
+      })
+    }
+  }
+}
+
 class App extends Component {
 
   state = {
@@ -43,6 +68,11 @@ class App extends Component {
 
   constructor(props){
     super(props);
+
+    if (device.electron) {
+      checkAria2Status()
+    }
+
     this.aria2 = new Aria2Client({
       ...conf,
       onRefresh: (data) => {

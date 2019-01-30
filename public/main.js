@@ -1,6 +1,6 @@
 const {
   app, BrowserWindow, Menu, shell,
-  Tray, globalShortcut
+  Tray, globalShortcut, ipcMain
 } = require('electron');
 const child_process = require('child_process');
 const path = require('path');
@@ -263,12 +263,30 @@ if (shouldQuit) {
     '--rpc-secret', secret
   ];
 
+  let aria2Status = null;
+
+  ipcMain.on('get-aria2-status', function (e) {
+    e.returnValue = aria2Status
+    aria2Status = null
+  });
+
   if (fs.existsSync(aria2Cli)) {
     console.log('rpc-secret: ', secret);
     const worker = child_process.spawn(aria2Cli, aria2Conf);
 
     worker.stdout.on('data', function (data) {
       console.log(data.toString());
+      if (data.toString().indexOf('Address already in use') >= 0) {
+        aria2Status = {
+          error: true,
+          message: data.toString()
+        }
+      } else if (data.toString().indexOf('IPv4 RPC: listening on TCP port') >= 0) {
+        aria2Status = {
+          error: false,
+          message: data.toString()
+        }
+      }
     });
 
     process.on('exit', function () {
