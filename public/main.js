@@ -6,8 +6,9 @@ const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
+const os = require('os');
 
-const userHomeDir = require('os').homedir();
+const userHomeDir = os.homedir();
 const ARIA2DESKTOP_DEV = process.env.ARIA2DESKTOP_DEV === 'true';
 
 const platform = process.platform;
@@ -270,7 +271,7 @@ if (shouldQuit) {
     aria2Status = null
   });
 
-  if (fs.existsSync(aria2Cli)) {
+  if (fs.existsSync(aria2Cli) || (os.platform() === 'win32' && fs.existsSync(aria2Cli + '.exe'))) {
     console.log('rpc-secret: ', secret);
     const worker = child_process.spawn(aria2Cli, aria2Conf);
 
