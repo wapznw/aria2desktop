@@ -371,8 +371,8 @@ export default class DownloadView extends Component {
                                                         autosize={{minRows: 4, maxRows: 8}}/> : null}
 
           {taskType === 'bt' ? <Dragger customRequest={(c)=>{
-            if (c.file.size > 1024 * 1024){
-              message.error('种子文件不能大于1MB');
+            if (c.file.size > 1024 * 1024 * 10){
+              message.error('种子文件不能大于10MB');
               return
             }
             let reader = new FileReader();
@@ -388,7 +388,7 @@ export default class DownloadView extends Component {
               <Icon type="inbox" />
             </p>
             <p className="ant-upload-text">点击或拖动BT文件到这个区域下载</p>
-            <p className="ant-upload-hint">请选择正确的BT文件格式，BT文件不得超过1024KB。</p>
+            <p className="ant-upload-hint">请选择正确的BT文件格式，BT文件不得超过10MB。</p>
           </Dragger> : null}
           {/*<Form.Item label={'保存位置'}>
               <Input type={'file'} addonAfter={<a>选择一个目录</a>} placeholder={this.state.config && this.state.config.dir}/>

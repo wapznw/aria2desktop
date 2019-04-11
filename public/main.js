@@ -264,34 +264,48 @@ if (shouldQuit) {
     '--rpc-secret', secret
   ];
 
+
   let aria2Status = null;
+  let aria2Runing = false;
+  const startAria2 = function () {
+    if (fs.existsSync(aria2Cli) || (os.platform() === 'win32' && fs.existsSync(aria2Cli + '.exe'))) {
+      console.log('rpc-secret: ', secret);
+      const worker = child_process.spawn(aria2Cli, aria2Conf);
+
+      worker.stdout.on('data', function (data) {
+        console.log(data.toString());
+        if (data.toString().indexOf('Address already in use') >= 0) {
+          aria2Status = {
+            error: true,
+            message: data.toString()
+          }
+        } else if (data.toString().indexOf('IPv4 RPC: listening on TCP port') >= 0) {
+          aria2Status = {
+            error: false,
+            message: data.toString()
+          }
+        }
+      });
+
+      process.on('exit', function () {
+        worker.killed || worker.kill();
+      });
+      return process
+    }
+    return null
+  };
 
   ipcMain.on('get-aria2-status', function (e) {
     e.returnValue = aria2Status
     aria2Status = null
   });
 
-  if (fs.existsSync(aria2Cli) || (os.platform() === 'win32' && fs.existsSync(aria2Cli + '.exe'))) {
-    console.log('rpc-secret: ', secret);
-    const worker = child_process.spawn(aria2Cli, aria2Conf);
+  ipcMain.on('start-aria2-cli', function (e) {
+    if (!aria2Runing) {
+      startAria2();
+      aria2Runing = true
+    }
+    e.returnValue = aria2Runing
+  });
 
-    worker.stdout.on('data', function (data) {
-      console.log(data.toString());
-      if (data.toString().indexOf('Address already in use') >= 0) {
-        aria2Status = {
-          error: true,
-          message: data.toString()
-        }
-      } else if (data.toString().indexOf('IPv4 RPC: listening on TCP port') >= 0) {
-        aria2Status = {
-          error: false,
-          message: data.toString()
-        }
-      }
-    });
-
-    process.on('exit', function () {
-      worker.killed || worker.kill();
-    });
-  }
 }

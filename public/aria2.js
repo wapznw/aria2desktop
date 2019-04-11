@@ -179,6 +179,7 @@
 
   Aria2.prototype.close = function (fn) {
     var socket = this.socket
+    var called = false
     return pg(function (done) {
       if (!socket) {
         done()
@@ -186,10 +187,15 @@
         if (socket.readyState === 3) {
           done()
         } else {
-          socket.addEventListener('close', function () {
-            done()
-          })
+          var d = function(){
+            if(!called){
+              done()
+              called = true
+            }
+          }
+          socket.addEventListener('close', d)
           socket.close()
+          setTimeout(d, 3000)
         }
       }
     }, fn)

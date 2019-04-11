@@ -70,6 +70,10 @@ class App extends Component {
     super(props);
 
     if (device.electron) {
+      let enableAria2 = getStorage('enableAria2')
+      if (enableAria2 || enableAria2 === null){
+        ipcRenderer.sendSync('start-aria2-cli')
+      }
       checkAria2Status()
     }
 
@@ -100,10 +104,12 @@ class App extends Component {
   }
 
   componentWillMount(){
-    this.aria2.connect().catch(() => {
-      const cfg = this.aria2.config
-      message.error(`无法连接到${cfg.host}:${cfg.port}`)
-    })
+    setTimeout(() => {
+      this.aria2.connect().catch(() => {
+        const cfg = this.aria2.config
+        message.error(`无法连接到${cfg.host}:${cfg.port}`)
+      })
+    }, 1000)
   }
 
   onMenuClick(item){

@@ -8,11 +8,13 @@ const {Header} = Layout;
 const {dialog} = window.require('electron').remote;
 
 const dataSource = getStorage('SERVER_LIST') || [];
+let enableAria2 = getStorage('enableAria2')
 
 class SettingView extends React.Component {
 
   state = {
     dir: getDownloadSaveDir() || '',
+    enableAria2: enableAria2 || enableAria2 === null,
     visible: false,
     dataSource: dataSource
   };
@@ -26,7 +28,6 @@ class SettingView extends React.Component {
         })
       });
     }
-
     eventBus.on('aria2_connect', this.handleAria2Connect)
   }
 
@@ -43,6 +44,7 @@ class SettingView extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     message.success('已修改默认下载目录');
+    setStorage('enableAria2', this.state.enableAria2);
     this.state.dir && setDownloadSaveDir(this.state.dir)
   };
 
@@ -117,12 +119,19 @@ class SettingView extends React.Component {
         <Header className="darg-move-window header-toolbar">设置</Header>
         <div style={{padding: 20}}>
           <Form onSubmit={this.handleSubmit}>
-            <Form.Item label={'文件保存目录'}>
+            <Form.Item label={'文件保存目录'} style={{marginBottom: 0}}>
               <Input prefix={<Icon type="folder" style={{color: 'rgba(0,0,0,.25)'}}/>}
                      addonAfter={addonAfter}
                      onChange={(e) => this.setState({dir: e.target.value})}
                      value={this.state.dir}
                      placeholder="默认文件保存路径"/>
+            </Form.Item>
+            <Form.Item label={'内置Aria2'} style={{marginBottom: 10}}>
+              <Switch checkedChildren="开"
+                      unCheckedChildren="关"
+                      onChange={val => this.setState({enableAria2: val})}
+                      defaultChecked={this.state.enableAria2} />
+              <span style={{marginLeft: 20}}>保存并重启生效</span>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
