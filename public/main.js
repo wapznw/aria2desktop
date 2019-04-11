@@ -107,7 +107,15 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     Menu.setApplicationMenu(process.platform === 'darwin' ? menu : null);
-    mainWindow.show()
+    // ubuntu 第一次创建窗口加载有问题
+    if (process.platform === 'linux') {
+      mainWindow.reload();
+      setTimeout(function () {
+        mainWindow.show()
+      }, 380)
+    } else {
+      mainWindow.show()
+    }
   })
 }
 
