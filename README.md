@@ -20,7 +20,15 @@
 
 
 [下载Ubuntu版](../../releases)
-> Ubuntu 需要先安装 aria2_1.33.1-1_amd64.deb
+> 如果启动内置aria2失败，尝试安装 sudo apt install libc-ares2 -y
+
+> 或安装 aria2_1.33.1-1_amd64.deb
+
+开发
+```
+npm run start
+npm run electron:dev
+```
 
 编译
 ```

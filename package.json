@@ -1,6 +1,6 @@
 {
-  "name": "aria2down",
-  "version": "0.1.0",
+  "name": "aria2desktop",
+  "version": "0.1.6",
   "private": true,
   "dependencies": {
     "antd": "^3.4.0",
