@@ -56,6 +56,7 @@ class SettingView extends React.Component {
         dataSource = dataSource.map(it => {
           return it.id === item.id ? item : it
         })
+        eventBus.emit('server_change', item)
       } else {
         const last = this.state.dataSource[this.state.dataSource.length - 1];
         item.id = last ? last.id + 1 : 2;
@@ -126,13 +127,13 @@ class SettingView extends React.Component {
                      value={this.state.dir}
                      placeholder="默认文件保存路径"/>
             </Form.Item>
-            <Form.Item label={'内置Aria2'} style={{marginBottom: 10}}>
+            {device.electron ? <Form.Item label={'内置Aria2'} style={{marginBottom: 10}}>
               <Switch checkedChildren="开"
                       unCheckedChildren="关"
                       onChange={val => this.setState({enableAria2: val})}
                       defaultChecked={this.state.enableAria2} />
               <span style={{marginLeft: 20}}>保存并重启生效</span>
-            </Form.Item>
+            </Form.Item> : null}
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 保存
@@ -181,6 +182,7 @@ class SettingView extends React.Component {
   }
 
   renderModal(item) {
+    let protocol = global.location.protocol
     return (
       <Modal
         wrapClassName="SettingModal"
@@ -191,12 +193,12 @@ class SettingView extends React.Component {
         onCancel={this.handleCancel}
       >
         <Form>
-          <Form.Item label="Title">
+          <Form.Item label="标题">
             <Input value={item.title || ''}
                    placeholder="如: 公司，家里"
                    onChange={(e) => this.handleChange(e.target.value, 'title')}/>
           </Form.Item>
-          <Form.Item label="Host">
+          <Form.Item label="Aria2地址">
             <Input.Group>
               <Col span={19}>
                 <Input value={item.host || ''}
@@ -206,17 +208,17 @@ class SettingView extends React.Component {
               <Col span={4}>
                 <InputNumber min={1} max={65535}
                              placeholder="1-65535"
-                             value={item.port || 0} onChange={(v) => this.handleChange(v, 'port')}/>
+                             value={item.port || 6800} onChange={(v) => this.handleChange(v, 'port')}/>
               </Col>
             </Input.Group>
           </Form.Item>
-          <Form.Item label="secret">
+          <Form.Item label="通信密令">
             <Input value={item.secret || ''}
-                   placeholder="与Aria2连接的密令"
+                   placeholder="与Aria2连接的密令 secret"
                    onChange={(e) => this.handleChange(e.target.value, 'secret')}/>
           </Form.Item>
-          <Form.Item label="HTTPS/WSS">
-            <Switch checked={item.secure}
+          <Form.Item label="是否使用HTTPS/WSS">
+            <Switch checked={item && item.title ? item.secure : protocol === 'https:'}
                     onChange={(v) => this.handleChange(v, 'secure')}/>
           </Form.Item>
         </Form>

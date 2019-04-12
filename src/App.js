@@ -105,11 +105,23 @@ class App extends Component {
 
   componentWillMount(){
     setTimeout(() => {
-      this.aria2.connect().catch(() => {
-        const cfg = this.aria2.config
-        message.error(`无法连接到${cfg.host}:${cfg.port}`)
-      })
+      try {
+        this.aria2.connect().catch(() => {
+          const cfg = this.aria2.config
+          message.error(`无法连接到${cfg.host}:${cfg.port}`)
+        })
+      } catch (e) {
+        console.log(e)
+      }
     }, 1000)
+    eventBus.on('server_change', (item) => {
+      let cfg = getStorage('ARIA2_SERVER')
+      console.log(cfg, item)
+      if (cfg && cfg.id && cfg.id === item.id) {
+        setStorage('ARIA2_SERVER', item);
+        this.connectToServer(item)
+      }
+    })
   }
 
   onMenuClick(item){
@@ -132,6 +144,7 @@ class App extends Component {
       await this.aria2.connect()
       hide();
     } catch (e) {
+      console.log(e)
       hide();
       if (e && e.type === 'error') {
         message.error(`无法连接到${server.host}:${server.port}`)

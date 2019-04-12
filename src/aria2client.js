@@ -42,8 +42,12 @@ export default class Aria2Client {
     aria2.onclose = () => {
       if (this._timer != null) clearInterval(this._timer);
       setTimeout(()=> {
-        if (this.aria2.socket.readyState === 3){
-          this.connect()
+        try {
+          if (this.aria2.socket.readyState === 3){
+            this.connect()
+          }
+        } catch (e) {
+          
         }
       }, 10000);
       if ('onClose' in this) {
